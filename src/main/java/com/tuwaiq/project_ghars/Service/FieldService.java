@@ -2,14 +2,8 @@ package com.tuwaiq.project_ghars.Service;
 
 import com.tuwaiq.project_ghars.Api.ApiException;
 import com.tuwaiq.project_ghars.DTOIn.FieldDTOIn;
-import com.tuwaiq.project_ghars.Model.Farm;
-import com.tuwaiq.project_ghars.Model.Field;
-import com.tuwaiq.project_ghars.Model.PlantType;
-import com.tuwaiq.project_ghars.Model.User;
-import com.tuwaiq.project_ghars.Repository.FarmRepository;
-import com.tuwaiq.project_ghars.Repository.FieldRepository;
-import com.tuwaiq.project_ghars.Repository.PlantTypeRepository;
-import com.tuwaiq.project_ghars.Repository.UserRepository;
+import com.tuwaiq.project_ghars.Model.*;
+import com.tuwaiq.project_ghars.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +16,15 @@ public class FieldService {
 
     private final FieldRepository fieldRepository;
     private final FarmRepository farmRepository;
+    private final FarmerRepository farmerRepository;
     private final UserRepository userRepository;
     private final PlantTypeRepository plantTypeRepository;
 
     public void addField(Integer userId, FieldDTOIn fieldDTOIn) {
-        User user = userRepository.findUserById(userId);
-        if (user == null) {
-            throw new ApiException("User not found");
+        Farmer farmer = farmerRepository.findFarmerById(userId);
+        if (farmer == null) {
+            throw new ApiException("Farmer not found");
         }
-
         Farm farm = farmRepository.findFarmById(fieldDTOIn.getFarmId());
         if (farm == null) {
             throw new ApiException("Farm not found");
@@ -39,10 +33,9 @@ public class FieldService {
         if (plantType==null){
             throw new ApiException("Plant not found");
         }
-
-        /*
-         * check user owns the farm
-         */
+        if (!farm.getFarmer().getId().equals(farmer.getId())){
+            throw new ApiException("You don't own this farm");
+        }
 
         Field field = new Field();
         field.setExpectedYield(fieldDTOIn.getExpectedYield());
@@ -60,28 +53,19 @@ public class FieldService {
     }
 
     public List<Field> getMyFieldsByFarm(Integer userId, Integer farmId) {
-        // check user/farmer
+        Farmer farmer = farmerRepository.findFarmerById(userId);
+        if (farmer == null) {
+            throw new ApiException("Farmer not found");
+        }
         Farm farm = farmRepository.findFarmById(farmId);
         if (farm == null) {
             throw new ApiException("Farm not found");
         }
-        return fieldRepository.findFieldByFarmIdAndFarm_Farmer_Id(userId,farmId);
+        return fieldRepository.findFieldByFarmIdAndFarm_Farmer_Id(farmId,farmer.getId());
     }
 
     public void updateField(Integer userId, Integer fieldId, FieldDTOIn fieldDTOIn) {
-        User user = userRepository.findUserById(userId);
-        if (user == null) {
-            throw new ApiException("User not found");
-        }
-
-        Field field = fieldRepository.findFieldById(fieldId);
-        if (field == null) {
-            throw new ApiException("Field not found");
-        }
-
-        /*
-         * check user owns the farm of this field
-         */
+        Field field = getFieldByFarmer(userId, fieldId);
 
         field.setExpectedYield(fieldDTOIn.getExpectedYield());
         field.setExpectedYieldTime(fieldDTOIn.getExpectedYieldTime());
@@ -90,18 +74,26 @@ public class FieldService {
     }
 
     public void deleteField(Integer userId, Integer fieldId) {
-        User user = userRepository.findUserById(userId);
-        if (user == null) {
-            throw new ApiException("User not found");
+        Field field = getFieldByFarmer(userId, fieldId);
+        fieldRepository.delete(field);
+    }
+
+    private Field getFieldByFarmer(Integer userId, Integer fieldId) {
+        Farmer farmer = farmerRepository.findFarmerById(userId);
+        if (farmer == null) {
+            throw new ApiException("Farmer not found");
         }
-        /*
-         * check user owns the farm of this field
-         */
         Field field = fieldRepository.findFieldById(fieldId);
         if (field == null) {
             throw new ApiException("Field not found");
         }
-
-        fieldRepository.delete(field);
+        Farm farm=farmRepository.findFarmById(field.getFarm().getId());
+        if (farm==null){
+            throw new ApiException("Farm not found");
+        }
+        if (!farm.getFarmer().getId().equals(farmer.getId())){
+            throw new ApiException("You dont own this farm");
+        }
+        return field;
     }
 }
