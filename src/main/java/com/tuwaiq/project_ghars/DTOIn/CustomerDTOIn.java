@@ -1,4 +1,5 @@
-package com.tuwaiq.project_ghars.DTO;
+package com.tuwaiq.project_ghars.DTOIn;
+
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -9,7 +10,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class FarmerDTOin {
+public class CustomerDTOIn {
 
     @NotEmpty
     @Size(min = 4, max = 10)
@@ -30,10 +31,4 @@ public class FarmerDTOin {
     @NotEmpty
     @Pattern(regexp = "^05\\d{8}$")
     private String phoneNumber;
-
-    @NotEmpty
-    private String experience;
-
-    @NotEmpty
-    private String level;
 }
