@@ -2,12 +2,8 @@ package com.tuwaiq.project_ghars.Service;
 
 import com.tuwaiq.project_ghars.Api.ApiException;
 import com.tuwaiq.project_ghars.DTOIn.YieldDTOIn;
-import com.tuwaiq.project_ghars.Model.Field;
-import com.tuwaiq.project_ghars.Model.User;
-import com.tuwaiq.project_ghars.Model.Yield;
-import com.tuwaiq.project_ghars.Repository.FieldRepository;
-import com.tuwaiq.project_ghars.Repository.UserRepository;
-import com.tuwaiq.project_ghars.Repository.YieldRepository;
+import com.tuwaiq.project_ghars.Model.*;
+import com.tuwaiq.project_ghars.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,22 +16,11 @@ public class YieldService {
     private final YieldRepository yieldRepository;
     private final FieldRepository fieldRepository;
     private final UserRepository userRepository;
+    private final FarmerRepository farmerRepository;
+    private final FarmRepository farmRepository;
 
     public void addYield(Integer userId, YieldDTOIn yieldDTOIn) {
-
-        User user = userRepository.findUserById(userId);
-        if (user == null) {
-            throw new ApiException("User not found");
-        }
-
-        Field field = fieldRepository.findFieldById(yieldDTOIn.getFieldId());
-        if (field == null) {
-            throw new ApiException("Field not found");
-        }
-
-        /*
-         * check user owns the farm of this field
-         */
+        Field field = getFieldByFarmer(userId,yieldDTOIn.getFieldId());
 
         Yield yield = new Yield();
         yield.setHarvestDate(yieldDTOIn.getHarvestDate());
@@ -62,19 +47,11 @@ public class YieldService {
 
     public void updateYield(Integer userId, Integer yieldId, YieldDTOIn yieldDTOIn) {
 
-        User user = userRepository.findUserById(userId);
-        if (user == null) {
-            throw new ApiException("User not found");
-        }
-
         Yield yield = yieldRepository.findYieldById(yieldId);
         if (yield == null) {
             throw new ApiException("Yield not found");
         }
-
-        /*
-         * check user owns the farm of this yield
-         */
+        getFieldByFarmer(userId,yield.getField().getFarm().getId());
 
         yield.setHarvestDate(yieldDTOIn.getHarvestDate());
         yield.setHarvestYield(yieldDTOIn.getHarvestYield());
@@ -84,17 +61,31 @@ public class YieldService {
     }
 
     public void deleteYield(Integer userId, Integer yieldId) {
-
-        User user = userRepository.findUserById(userId);
-        if (user == null) {
-            throw new ApiException("User not found");
-        }
-
         Yield yield = yieldRepository.findYieldById(yieldId);
         if (yield == null) {
             throw new ApiException("Yield not found");
         }
+        getFieldByFarmer(userId,yield.getField().getFarm().getId());
 
         yieldRepository.delete(yield);
+    }
+
+    private Field getFieldByFarmer(Integer userId, Integer fieldId) {
+        Farmer farmer = farmerRepository.findFarmerById(userId);
+        if (farmer == null) {
+            throw new ApiException("Farmer not found");
+        }
+        Field field = fieldRepository.findFieldById(fieldId);
+        if (field == null) {
+            throw new ApiException("Field not found");
+        }
+        Farm farm=farmRepository.findFarmById(field.getFarm().getId());
+        if (farm==null){
+            throw new ApiException("Farm not found");
+        }
+        if (!farm.getFarmer().getId().equals(farmer.getId())){
+            throw new ApiException("You dont own this farm");
+        }
+        return field;
     }
 }

@@ -6,6 +6,7 @@ import com.tuwaiq.project_ghars.Model.Farm;
 import com.tuwaiq.project_ghars.Model.Farmer;
 import com.tuwaiq.project_ghars.Model.User;
 import com.tuwaiq.project_ghars.Repository.FarmRepository;
+import com.tuwaiq.project_ghars.Repository.FarmerRepository;
 import com.tuwaiq.project_ghars.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,19 +19,15 @@ import java.util.List;
 public class FarmService {
 
     private final FarmRepository farmRepository;
-    private final UserRepository userRepository;
+    private final FarmerRepository farmerRepository;
 
-    // all need checking
     public void addFarm(Integer userId, FarmDTOIn farmDTOIn) {
-        User user = userRepository.findUserById(userId);
-        if (user == null) {
-            throw new ApiException("User not found");
+        Farmer farmer = farmerRepository.findFarmerById(userId);
+        if (farmer == null) {
+            throw new ApiException("farmer not found");
         }
-        /*
-         * check user is the farmer
-         * */
-        if (!user.getId().equals(farmDTOIn.getFarmerId())) {
-            throw new ApiException("User id mismatch, use your own id");
+        if (!farmer.getId().equals(farmDTOIn.getFarmerId())) {
+            throw new ApiException("farmer id mismatch, use your own id");
         }
 
         Farm farm = new Farm();
@@ -40,7 +37,7 @@ public class FarmService {
         farm.setSize(farmDTOIn.getSize());
         farm.setSpeciality(farmDTOIn.getSpeciality());
         farm.setPhotoUrl(farmDTOIn.getPhotoUrl());
-        //farm.setFarmer();
+        farm.setFarmer(farmer);
         farm.setRating(0.0);
         farm.setCreatedAt(LocalDateTime.now());
 
@@ -51,9 +48,12 @@ public class FarmService {
         return farmRepository.findAll();
     }
 
-    public Farm getMyFarm(Integer userId, Integer farmId) {
-
-        Farm farm = farmRepository.findFarmById(farmId);
+    public List<Farm> getMyFarm(Integer userId, Integer farmId) {
+        Farmer farmer=farmerRepository.findFarmerById(userId);
+        if (farmer==null){
+            throw new ApiException("Farmer not found");
+        }
+        List<Farm> farm = farmRepository.findFarmByIdAndFarmer_Id(farmId,farmer.getId());
         if (farm == null) {
             throw new ApiException("Farm not found");
         }
@@ -61,13 +61,12 @@ public class FarmService {
     }
 
     public void updateFarm(Integer userId, Integer farmId, FarmDTOIn farmDTOIn) {
-
-        User user = userRepository.findUserById(userId);
-        if (user == null) {
+        Farmer farmer = farmerRepository.findFarmerById(userId);
+        if (farmer == null) {
             throw new ApiException("User not found");
         }
 
-        if (!user.getId().equals(farmDTOIn.getFarmerId())) {
+        if (!farmer.getId().equals(farmDTOIn.getFarmerId())) {
             throw new ApiException("User id mismatch, use your own id");
         }
 
@@ -75,10 +74,16 @@ public class FarmService {
         if (farm == null) {
             throw new ApiException("Farm not found");
         }
+        if (!farm.getFarmer().getId().equals(farmer.getId())){
+            throw new ApiException("You don't own this farm");
+        }
 
         farm.setLicense(farmDTOIn.getLicense());
         farm.setName(farmDTOIn.getName());
         farm.setDescription(farmDTOIn.getDescription());
+        if (!farmDTOIn.getSize().matches("Small| Medium | Large")){
+            throw new ApiException("Sorry, the farm size must be Small, Medium, or large, please try again");
+        }
         farm.setSize(farmDTOIn.getSize());
         farm.setSpeciality(farmDTOIn.getSpeciality());
         farm.setPhotoUrl(farmDTOIn.getPhotoUrl());
@@ -87,16 +92,16 @@ public class FarmService {
     }
 
     public void deleteFarm(Integer userId, Integer farmId) {
-        User user = userRepository.findUserById(userId);
-        if (user == null) {
+        Farmer farmer = farmerRepository.findFarmerById(userId);
+        if (farmer == null) {
             throw new ApiException("User not found");
         }
-        /*
-        * check user is the farmer
-        * */
         Farm farm = farmRepository.findFarmById(farmId);
         if (farm == null) {
             throw new ApiException("Farm not found");
+        }
+        if (!farm.getFarmer().getId().equals(farmer.getId())){
+            throw new ApiException("You don't own this farm");
         }
 
         farmRepository.delete(farm);
