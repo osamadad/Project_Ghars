@@ -17,7 +17,6 @@ public class FieldService {
     private final FieldRepository fieldRepository;
     private final FarmRepository farmRepository;
     private final FarmerRepository farmerRepository;
-    private final UserRepository userRepository;
     private final PlantTypeRepository plantTypeRepository;
 
     public void addField(Integer userId, FieldDTOIn fieldDTOIn) {
@@ -43,8 +42,10 @@ public class FieldService {
         field.setCreatedAt(LocalDateTime.now());
         field.setStatus("Seedling");
         field.setFarm(farm);
-        field.setPlantType(plantType);
+        field.getPlantTypes().add(plantType);
+        plantType.getFields().add(field);
 
+        plantTypeRepository.save(plantType);
         fieldRepository.save(field);
     }
 

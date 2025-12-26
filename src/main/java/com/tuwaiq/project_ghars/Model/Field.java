@@ -35,8 +35,8 @@ public class Field {
     private LocalDateTime createdAt;
     @ManyToOne
     private Farm farm;
-    @ManyToOne()
-    private PlantType plantType;
+    @ManyToMany
+    private Set<PlantType> plantTypes;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "field")
     private Set<Yield> yields;
 }
