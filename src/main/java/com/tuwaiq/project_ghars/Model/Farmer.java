@@ -19,7 +19,6 @@ public class Farmer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "int primary key")
     private Integer id;
 
     @NotEmpty
@@ -36,8 +35,8 @@ public class Farmer {
     private User user;
 
 
-//    @OneToMany(mappedBy = "farmer", cascade = CascadeType.ALL)
-//    private Set<Farm> farms;
+    @OneToMany(mappedBy = "farmer", cascade = CascadeType.ALL)
+    private Set<Farm> farms;
 
     @OneToMany(mappedBy = "farmer", cascade = CascadeType.ALL)
     private Set<VirtualFarm> virtualFarms;

@@ -16,7 +16,6 @@ public class Driver {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "int primary key")
     private Integer id;
 
     @Column(columnDefinition = "boolean default false")

@@ -19,7 +19,6 @@ public class VirtualFarm {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "int primary key auto_increment")
     private Integer id;
 
     @NotEmpty

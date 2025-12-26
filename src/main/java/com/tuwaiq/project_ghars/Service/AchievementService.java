@@ -27,7 +27,7 @@ public class AchievementService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
+        if (!user.getRole().equals("ADMIN")) {
             throw new ApiException("Access denied");
         }
 
@@ -50,7 +50,7 @@ public class AchievementService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
+        if (!user.getRole().equals("ADMIN")) {
             throw new ApiException("Access denied");
         }
 
@@ -69,7 +69,7 @@ public class AchievementService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
+        if (!user.getRole().equals("ADMIN")) {
             throw new ApiException("Access denied");
         }
 
@@ -92,7 +92,7 @@ public class AchievementService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
+        if (!user.getRole().equals("ADMIN")) {
             throw new ApiException("Access denied");
         }
 
@@ -122,7 +122,7 @@ public class AchievementService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
+        if (!user.getRole().equals("ADMIN")) {
             throw new ApiException("Access denied");
         }
 
@@ -147,7 +147,7 @@ public class AchievementService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
+        if (!user.getRole().equals("ADMIN")) {
             throw new ApiException("Access denied");
         }
 
