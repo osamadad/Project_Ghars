@@ -19,7 +19,6 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "int primary key")
     private Integer id;
 
     @NotEmpty

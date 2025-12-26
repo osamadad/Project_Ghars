@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AchievementRepository extends JpaRepository<AchievementRepository,Integer> {
+public interface AchievementRepository extends JpaRepository<Achievement,Integer> {
+    Achievement findAchievementById(Integer id);
+
     List<Achievement> findAchievementByFarmer(Farmer farmer);
 }
