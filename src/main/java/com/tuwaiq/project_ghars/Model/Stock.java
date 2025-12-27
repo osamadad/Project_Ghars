@@ -36,5 +36,7 @@ public class Stock {
 
     @OneToOne(mappedBy = "stock", cascade = CascadeType.ALL)
     private Product product;
+    @ManyToOne
+    private Yield yield;
 }
 

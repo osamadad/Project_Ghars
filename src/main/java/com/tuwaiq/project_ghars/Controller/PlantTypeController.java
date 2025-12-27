@@ -47,14 +47,14 @@ public class PlantTypeController {
         return ResponseEntity.status(200).body(new ApiResponse("Plant type deleted successfully"));
     }
 
-    @PostMapping("/identify")
-    public ResponseEntity<?> identifyPlant(@RequestParam("image") MultipartFile image, @RequestParam(defaultValue = "leaf") String organ) throws IOException {
+    @PostMapping("/identify/{organ}")
+    public ResponseEntity<?> identifyPlant(@RequestBody MultipartFile image, @PathVariable String organ) throws IOException {
         String result = plantNetService.identifyPlant(image, organ);
         return ResponseEntity.status(200).body(result);
     }
 
-    @PostMapping("/identify")
-    public ResponseEntity<?> identifyPlantDiseases(@RequestParam("image") MultipartFile image, @RequestParam(defaultValue = "leaf") String organ) throws IOException {
+    @PostMapping("/identify-diseases/{organ}")
+    public ResponseEntity<?> identifyPlantDiseases(@RequestBody MultipartFile image, @PathVariable String organ) throws IOException {
         String result = plantNetService.identifyPlantDiseases(image, organ);
         return ResponseEntity.status(200).body(result);
     }

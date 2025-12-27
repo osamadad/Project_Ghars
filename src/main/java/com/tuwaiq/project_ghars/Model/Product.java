@@ -43,4 +43,7 @@ public class Product {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "stock_id")
     private Stock stock;
+
+    @ManyToOne
+    private Farm farm;
 }
