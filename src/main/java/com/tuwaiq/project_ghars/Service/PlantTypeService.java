@@ -39,21 +39,117 @@ public class PlantTypeService {
         if (oldPlantType == null) {
             throw new ApiException("Plant type not found");
         }
-        oldPlantType.setName(plantType.getName());
+        oldPlantType.setCommonName(plantType.getCommonName());
+
+        oldPlantType.setScientificName(plantType.getScientificName());
+
         oldPlantType.setFamily(plantType.getFamily());
-        oldPlantType.setSeason(plantType.getSeason());
-        if (!plantType.getCategory().matches("Vegetable| Fruit | Flower | Herb")){
-            throw new ApiException("Sorry, the plant category must be Vegetable, Fruit, Flower, or Herb, please try again");
+
+        if (!plantType.getCategory().matches("fruit|vegetable|flower|herb")) {
+            throw new ApiException(
+                    "Sorry, the plant category must be fruit, vegetable, flower, or herb, please try again"
+            );
         }
         oldPlantType.setCategory(plantType.getCategory());
-        oldPlantType.setGrowthTime(plantType.getGrowthTime());
-        if (!plantType.getCategory().matches("Seed | Seedling | Grown")){
-            throw new ApiException("Sorry, the farm size must be Seed, Seedling, or Grown, please try again");
+
+        if (!plantType.getLifeSpan().matches("annual|perennial|biennial")) {
+            throw new ApiException(
+                    "Sorry, the plant life span must be annual, perennial, or biennial, please try again"
+            );
+        }
+        oldPlantType.setLifeSpan(plantType.getLifeSpan());
+
+        oldPlantType.setNativeRegion(plantType.getNativeRegion());
+
+        if (!plantType.getGrowthSpeed().matches("slow|normal|fast")) {
+            throw new ApiException(
+                    "Sorry, the plant growth speed must be slow, normal, or fast, please try again"
+            );
+        }
+        oldPlantType.setGrowthSpeed(plantType.getGrowthSpeed());
+
+        if (!plantType.getExpectedTimeToGrow().matches("^[0-9]+\\s(days|months|years)$")) {
+            throw new ApiException(
+                    "Sorry, the expected time to grow must be in this format: number + days, months, or years, please try again"
+            );
+        }
+        oldPlantType.setExpectedTimeToGrow(plantType.getExpectedTimeToGrow());
+
+        if (!plantType.getSize().matches("small|medium|large")) {
+            throw new ApiException(
+                    "Sorry, the plant size must be small, medium, or large, please try again"
+            );
+        }
+        oldPlantType.setSize(plantType.getSize());
+
+        if (!plantType.getWaterNeeds().matches("low|medium|high")) {
+            throw new ApiException(
+                    "Sorry, the plant water needs must be low, medium, or high, please try again"
+            );
+        }
+        oldPlantType.setWaterNeeds(plantType.getWaterNeeds());
+
+        if (!plantType.getSunNeeds().matches("low|medium|high")) {
+            throw new ApiException(
+                    "Sorry, the plant sun needs must be low, medium, or high, please try again"
+            );
+        }
+        oldPlantType.setSunNeeds(plantType.getSunNeeds());
+
+        if (!plantType.getTemperatureNeeds().matches("cold|medium|hot")) {
+            throw new ApiException(
+                    "Sorry, the plant temperature needs must be cold, medium, or hot, please try again"
+            );
+        }
+        oldPlantType.setTemperatureNeeds(plantType.getTemperatureNeeds());
+
+        if (!plantType.getGrowingMedium().matches("soil|water|both")) {
+            throw new ApiException(
+                    "Sorry, the growing medium must be soil, water, or both, please try again"
+            );
+        }
+        oldPlantType.setGrowingMedium(plantType.getGrowingMedium());
+
+        if (!plantType.getPlantingPlace().matches("indoor|outdoor|both")) {
+            throw new ApiException(
+                    "Sorry, the planting place must be indoor, outdoor, or both, please try again"
+            );
+        }
+        oldPlantType.setPlantingPlace(plantType.getPlantingPlace());
+        if (!plantType.getSeason().matches("winter|spring|summer|autumn")) {
+            throw new ApiException(
+                    "Sorry, the plant season must be winter, spring, summer, or autumn, please try again"
+            );
+        }
+        oldPlantType.setSeason(plantType.getSeason());
+        if (!plantType.getDifficultyLevel().matches("easy|medium|hard")) {
+            throw new ApiException(
+                    "Sorry, the difficulty level must be easy, medium, or hard, please try again"
+            );
+        }
+        oldPlantType.setDifficultyLevel(plantType.getDifficultyLevel());
+
+        if (!plantType.getCommonRisks().matches(
+                "^(overwatering|pests|disease|temperature_stress)(,(overwatering|pests|disease|temperature_stress))*$")) {
+            throw new ApiException(
+                    "Sorry, the common risks must be one or more of: overwatering, pests, disease, or temperature stress, please try again"
+            );
+        }
+        oldPlantType.setCommonRisks(plantType.getCommonRisks());
+
+        if (!plantType.getType().matches("Seed|Seedling|Grown")) {
+            throw new ApiException(
+                    "Sorry, the farm size must be Seed, Seedling, or Grown, please try again"
+            );
         }
         oldPlantType.setType(plantType.getType());
-        if (!plantType.getCategory().matches("Kg | Pack")){
-            throw new ApiException("Sorry, the farm size must be Kg, or Pack, please try again");
+
+        if (!plantType.getUnit().matches("PIECE|PACK|BUNCH")) {
+            throw new ApiException(
+                    "Sorry, the farm size must be PIECE, PACK, or BUNCH, please try again"
+            );
         }
+
         oldPlantType.setUnit(plantType.getUnit());
 
         plantTypeRepository.save(oldPlantType);
