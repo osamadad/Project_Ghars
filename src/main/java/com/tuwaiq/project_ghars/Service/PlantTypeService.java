@@ -35,12 +35,10 @@ public class PlantTypeService {
         if (user == null) {
             throw new ApiException("User not found");
         }
-
         PlantType oldPlantType = plantTypeRepository.findPlantTypeById(plantTypeId);
         if (oldPlantType == null) {
             throw new ApiException("Plant type not found");
         }
-
         oldPlantType.setName(plantType.getName());
         oldPlantType.setFamily(plantType.getFamily());
         oldPlantType.setSeason(plantType.getSeason());
