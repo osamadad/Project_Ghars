@@ -1,14 +1,11 @@
 package com.tuwaiq.project_ghars.Service;
 
 import com.tuwaiq.project_ghars.Api.ApiException;
-import com.tuwaiq.project_ghars.DTOout.GreenHouseLearningDTOOut;
-import com.tuwaiq.project_ghars.DTOout.WaterPlantingLearningDTOOut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +15,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AIService {
 
-    private final ObjectMapper objectMapper;
     @Value("${openai.api-key}")
     private String openAiApiKey;
 
@@ -60,72 +56,5 @@ public class AIService {
         Map message = (Map) firstChoice.get("message");
 
         return message.get("content").toString();
-    }
-
-    public GreenHouseLearningDTOOut greenHouseLearningAI() {
-
-        String prompt = """
-                You are an AI plant education expert specialized in teaching beginners about greenhouses.
-                
-                Teach greenhouse concepts in an educational-first way.
-                Do NOT give step-by-step construction instructions.
-                Do NOT include tools, materials, measurements, or costs.
-                Focus on understanding, benefits, limitations, and decision-making.
-                
-                Return ONLY valid JSON in this exact format:
-                
-                {
-                  "definition": "",
-                  "benefits": [],
-                  "limitations": [],
-                  "greenhouseTypes": [],
-                  "effectsOnPlants": [],
-                  "whenToUseAGreenhouse": [],
-                  "basicComponents": [],
-                  "commonMisconceptions": [],
-                  "aiSummary": ""
-                }
-                
-                """;
-
-        String response = askAI(prompt);
-
-        GreenHouseLearningDTOOut dto = objectMapper.readValue(response, GreenHouseLearningDTOOut.class);
-
-        return dto;
-    }
-
-    public WaterPlantingLearningDTOOut waterPlantingLearningAI() {
-
-        String prompt = """
-                You are an AI plant education expert specialized in teaching beginners about water planting (growing plants in water).
-                
-                Teach water planting concepts in an educational-first way.
-                Do NOT give step-by-step setup instructions.
-                Do NOT include tools, equipment, measurements, nutrient ratios, or costs.
-                Focus on understanding, benefits, limitations, and decision-making.
-                
-                Return ONLY valid JSON in this exact format:
-                
-                {
-                  "definition": "",
-                  "benefits": [],
-                  "limitations": [],
-                  "waterPlantingTypes": [],
-                  "effectsOnPlants": [],
-                  "whenToUseWaterPlanting": [],
-                  "plantSuitability": [],
-                  "commonMisconceptions": [],
-                  "aiSummary": ""
-                }
-                
-                """;
-
-
-        String response = askAI(prompt);
-
-        WaterPlantingLearningDTOOut dto = objectMapper.readValue(response, WaterPlantingLearningDTOOut.class);
-
-        return dto;
     }
 }
