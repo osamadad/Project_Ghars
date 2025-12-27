@@ -16,7 +16,6 @@ import java.util.Set;
 @AllArgsConstructor
 public class FarmDTOIn {
 
-    @NotEmpty(message = "Sorry, the farm license can't be empty, please try again")
     private String license;
     @NotEmpty(message = "Sorry, the farm name can't be empty, please try again")
     private String name;
