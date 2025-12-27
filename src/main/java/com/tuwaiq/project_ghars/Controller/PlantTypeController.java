@@ -3,6 +3,7 @@ package com.tuwaiq.project_ghars.Controller;
 import com.tuwaiq.project_ghars.Api.ApiResponse;
 import com.tuwaiq.project_ghars.Model.PlantType;
 import com.tuwaiq.project_ghars.Model.User;
+import com.tuwaiq.project_ghars.Service.AIService;
 import com.tuwaiq.project_ghars.Service.PlantNetService;
 import com.tuwaiq.project_ghars.Service.PlantTypeService;
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ public class PlantTypeController {
 
     private final PlantTypeService plantTypeService;
     private final PlantNetService plantNetService;
+    private final AIService aiService;
 
     @PostMapping("/add")
     public ResponseEntity<?> addPlantType(@AuthenticationPrincipal User user, @RequestBody @Valid PlantType plantType) {
@@ -55,5 +57,15 @@ public class PlantTypeController {
     public ResponseEntity<?> identifyPlantDiseases(@RequestParam("image") MultipartFile image, @RequestParam(defaultValue = "leaf") String organ) throws IOException {
         String result = plantNetService.identifyPlantDiseases(image, organ);
         return ResponseEntity.status(200).body(result);
+    }
+
+    @GetMapping("/learn/green-house")
+    public ResponseEntity<?> LearnGreenHouseAI() {
+        return ResponseEntity.status(200).body(aiService.greenHouseLearningAI());
+    }
+
+    @GetMapping("/learn/water-planting")
+    public ResponseEntity<?> LearnWaterPlantingAI() {
+        return ResponseEntity.status(200).body(aiService.waterPlantingLearningAI());
     }
 }
