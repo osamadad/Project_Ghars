@@ -29,8 +29,7 @@ public class FarmerController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateMyFarmer(@AuthenticationPrincipal User user,
-                                            @RequestBody @Valid FarmerDTOIn farmerDTOIn) {
+    public ResponseEntity<?> updateMyFarmer(@AuthenticationPrincipal User user, @RequestBody @Valid FarmerDTOIn farmerDTOIn) {
         farmerService.updateMyFarmer(user.getId(), farmerDTOIn);
         return ResponseEntity.status(200).body(new ApiResponse("Farmer updated"));
     }
