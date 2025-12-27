@@ -21,9 +21,10 @@ public class Farm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @NotEmpty(message = "Sorry, the farm license can't be empty, please try again")
     @Column(columnDefinition = "varchar(255) unique")
     private String license;
+    @Column()
+    private String licenseStaus = null;
     @Column()
     private String name;
     @Column()
