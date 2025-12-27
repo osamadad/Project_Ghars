@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,4 +27,7 @@ public class Driver {
     @MapsId
     @JsonIgnore
     private User user;
+
+    @OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true, mappedBy = "driver")
+    private Set<Delivery> deliveries;
 }
