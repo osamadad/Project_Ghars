@@ -30,4 +30,7 @@ public class Customer {
     @MapsId
     @JsonIgnore
     private User user;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "customer")
+    private Set<Order> order;
 }
