@@ -25,10 +25,11 @@ public class Delivery {
 
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
-
-    @ManyToOne
     @JoinColumn(name = "driver_id")
     private Driver driver;
+
+    @OneToOne
+    @JoinColumn(name = "order_id", unique = true)
+    private Order order;
+
 }

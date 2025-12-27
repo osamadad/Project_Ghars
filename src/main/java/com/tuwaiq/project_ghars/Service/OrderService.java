@@ -74,7 +74,6 @@ public class OrderService {
 
         orderRepository.save(order);
     }
-
     public void updateOrderStatus(Integer userId, Integer orderId, String status) {
 
         User user = userRepository.findUserById(userId);
@@ -87,6 +86,10 @@ public class OrderService {
         Order order = orderRepository.findOrderById(orderId);
         if (order == null)
             throw new ApiException("Order not found");
+
+
+        if (order.getDelivery() != null)
+            throw new ApiException("Order status is managed by delivery");
 
         if (order.getStatus().equals("DELIVERED") ||
                 order.getStatus().equals("CANCELED"))

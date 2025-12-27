@@ -45,6 +45,9 @@ public class DeliveryService {
         if (order == null)
             throw new ApiException("Order not found");
 
+        if (order.getDelivery() != null)
+            throw new ApiException("Delivery already exists for this order");
+
         if (!(order.getStatus().equals("PAID") || order.getStatus().equals("CONFIRMED")))
             throw new ApiException("Order is not ready for delivery");
 
@@ -60,11 +63,13 @@ public class DeliveryService {
         delivery.setDriver(driver);
         delivery.setStatus("PENDING");
 
+        order.setDelivery(delivery);
+
         driver.setIsBusy(true);
 
         deliveryRepository.save(delivery);
-        driverRepository.save(driver);
     }
+
 
     public void updateDeliveryStatus(Integer userId, Integer deliveryId, String status) {
 
@@ -82,12 +87,6 @@ public class DeliveryService {
         if (!delivery.getDriver().getId().equals(user.getDriver().getId()))
             throw new ApiException("This delivery does not belong to you");
 
-        if (status.equals("ON_THE_WAY") && !delivery.getStatus().equals("PENDING"))
-            throw new ApiException("Invalid status transition");
-
-        if (status.equals("DELIVERED") && !delivery.getStatus().equals("ON_THE_WAY"))
-            throw new ApiException("Invalid status transition");
-
         delivery.setStatus(status);
 
         if (status.equals("DELIVERED")) {
@@ -97,4 +96,5 @@ public class DeliveryService {
 
         deliveryRepository.save(delivery);
     }
+
 }

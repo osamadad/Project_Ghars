@@ -36,11 +36,15 @@ public class Order {
     @NotNull(message = "Order creation date is required")
     private LocalDateTime createdAt;
 
-
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItem;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private Delivery delivery;
+
 }
