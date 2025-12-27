@@ -45,5 +45,8 @@ public class Farm {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "farm")
     @JsonIgnore
     private Set<Field> fields;
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,mappedBy = "farm")
+    @JsonIgnore
+    private Set<Product> products;
 
 }

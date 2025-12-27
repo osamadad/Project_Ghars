@@ -1,5 +1,6 @@
 package com.tuwaiq.project_ghars.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.NotEmpty;
@@ -94,8 +95,10 @@ public class PlantType {
     @Pattern(regexp = "PIECE|PACK|BUNCH", message = "Sorry, the farm size must be PIECE, PACK, or BUNCH, please try again")
     @Column()
     private String unit;
-    @OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true, mappedBy = "plantType")
+    @ManyToMany(mappedBy = "plantTypes")
+    @JsonIgnore
     private Set<Field> fields;
     @OneToMany
+    @JsonIgnore
     private Set<VirtualPlot> virtualPlots;
 }

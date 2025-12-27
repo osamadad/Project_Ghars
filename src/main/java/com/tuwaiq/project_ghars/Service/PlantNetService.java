@@ -23,7 +23,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class PlantNetService {
 
-    @Value("${plantnet.api-key}")
+    @Value("${PLANTNET_API_KEY}")
     private String apiKey;
 
     private final String apiUrlIdentify="https://my-api.plantnet.org/v2/identify/";
@@ -51,7 +51,7 @@ public class PlantNetService {
         HttpEntity<MultiValueMap<String, Object>> request =
                 new HttpEntity<>(body, headers);
 
-        String url = apiUrlIdentify + "?api-key=" + apiKey;
+        String url = apiUrlIdentify + "all"+ "?api-key=" + apiKey;
 
         return restTemplate
                 .postForEntity(url, request, String.class)
@@ -77,7 +77,7 @@ public class PlantNetService {
         HttpEntity<MultiValueMap<String, Object>> request =
                 new HttpEntity<>(body, headers);
 
-        String url = apiUrlDiseases + "?api-key=" + apiKey;
+        String url = apiUrlDiseases +"all"+ "?api-key=" + apiKey;
 
         return restTemplate
                 .postForEntity(url, request, String.class)
