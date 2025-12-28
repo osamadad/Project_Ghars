@@ -1,7 +1,7 @@
 package com.tuwaiq.project_ghars.Service;
 
 import com.tuwaiq.project_ghars.Api.ApiException;
-import com.tuwaiq.project_ghars.DTOout.PaymentDTOOut;
+import com.tuwaiq.project_ghars.DTOIn.PaymentRequestDTOIn;
 import com.tuwaiq.project_ghars.Model.Order;
 import com.tuwaiq.project_ghars.Model.Payment;
 import com.tuwaiq.project_ghars.Model.User;
@@ -14,9 +14,6 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
@@ -28,7 +25,10 @@ public class PaymentService {
     @Value("${moyasar.secret-key}")
     private String moyasarSecretKey;
 
-    public PaymentDTOOut startPayment(Integer userId, Integer orderId) {
+    private static final String MOYASAR_API_UTL="https://api.moyasar.com/v1/payments";
+
+
+    public ResponseEntity<String> startPayment(Integer userId, Integer orderId, PaymentRequestDTOIn paymentRequest) {
 
         User user = userRepository.findUserById(userId);
         if (user == null)
@@ -51,53 +51,88 @@ public class PaymentService {
         if (existing != null && existing.getStatus().equals("PAID"))
             throw new ApiException("Order already paid");
 
+        String url="https://api.moyasar.com/v1/payments";
+
+        String callBackUrl="https://your-server.com/api/payments/callback";
+
         Payment payment = new Payment();
-        payment.setStatus("PENDING");
-        payment.setProvider("MOYASAR");
         payment.setAmount(order.getTotalPrice());
-        payment.setOrder(order);
-        paymentRepository.save(payment);
+        payment.setCurrency("SAR");
+        payment.setDescription("Payment for order "+order.getId()+" amount to "+ payment.getAmount());
 
-        int amountInHalala = order.getTotalPrice() * 100;
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("amount", amountInHalala);
-        body.put("currency", "SAR");
-        body.put("description", "Order #" + order.getId());
-
-        Map<String, Object> metadata = new HashMap<>();
-        metadata.put("local_payment_id", payment.getId());
-        metadata.put("order_id", order.getId());
-        body.put("metadata", metadata);
+        String requestBody=String.format(
+                "source[type]=card" +
+                        "&source[name]=%s" +
+                        "&source[number]=%s" +
+                        "&source[cvc]=%s" +
+                        "&source[month]=%s" +
+                        "&source[year]=%s" +
+                        "&amount=%d" +
+                        "&currency=%s" +
+                        "&description=%s" +
+                        "&callback_url=%s",
+                paymentRequest.getName(),
+                paymentRequest.getNumber(),
+                paymentRequest.getCvc(),
+                paymentRequest.getMonth(),
+                paymentRequest.getYear(),
+                (int) (payment.getAmount() * 100),
+                payment.getCurrency(),
+                payment.getDescription(),
+                callBackUrl
+        );
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBasicAuth(moyasarSecretKey, "");
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
+        // Send the request
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Map> response = restTemplate.exchange(
-                "https://api.moyasar.com/v1/payments",
+        ResponseEntity<String> response = restTemplate.exchange(
+                url,
                 HttpMethod.POST,
                 entity,
-                Map.class
+                String.class
         );
 
-        Map res = response.getBody();
-        if (res == null || res.get("id") == null)
-            throw new ApiException("Moyasar payment failed");
 
-        String moyasarPaymentId = res.get("id").toString();
-        payment.setMoyasarPaymentId(moyasarPaymentId);
+        payment.setStatus("PENDING");
+        payment.setProvider("MOYASAR");
+        payment.setCallBackUrl(callBackUrl);
+        payment.setOrder(order);
+
         paymentRepository.save(payment);
 
-        return new PaymentDTOOut(
-                payment.getId(),
-                payment.getStatus(),
-                payment.getProvider(),
-                payment.getAmount(),
-                payment.getMoyasarPaymentId()
+        // Return the API response
+        return ResponseEntity
+                .status(response.getStatusCode())
+                .body(response.getBody());
+    }
+
+    public String getPaymentStatus(String paymentId) {
+
+        String url="https://api.moyasar.com/v1/payments";
+
+        // Prepare headers with authentication
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(moyasarSecretKey, "");
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        // Call Moyasar API
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(
+                url +"/"+ paymentId,
+                HttpMethod.GET,
+                entity,
+                String.class
         );
+
+        // Return the response body
+        return response.getBody();
     }
 }
