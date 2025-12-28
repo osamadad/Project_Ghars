@@ -1,5 +1,6 @@
 package com.tuwaiq.project_ghars.Controller;
 
+import com.tuwaiq.project_ghars.Api.ApiResponse;
 import com.tuwaiq.project_ghars.DTOIn.SmartIrrigationDTOIn;
 import com.tuwaiq.project_ghars.Model.User;
 import com.tuwaiq.project_ghars.Service.AIService;
@@ -18,7 +19,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AIController {
 
-    private final AIService aiService ;
+    private final AIService aiService;
     private final PlantNetService plantNetService;
 
     @GetMapping("/soil-seeds")
@@ -50,10 +51,12 @@ public class AIController {
     public ResponseEntity<?> recommendEvent(@AuthenticationPrincipal User user) {
         return ResponseEntity.status(200).body(aiService.recommendBestEvent(user.getId()));
     }
+
     @GetMapping("/ai/season-plants/{season}")
     public ResponseEntity<?> getSeasonPlants(@PathVariable String season, @AuthenticationPrincipal User user) {
         return ResponseEntity.status(200).body(aiService.getSeasonPlants(season));
     }
+
     @PostMapping("/ai/smart-irrigation")
     public ResponseEntity<?> smartIrrigation(@RequestBody @Valid SmartIrrigationDTOIn dto) {
         return ResponseEntity.status(200).body(aiService.smartIrrigationSchedule(dto.getPlant(), dto.getSeason(), dto.getLocation()));
@@ -63,11 +66,11 @@ public class AIController {
     public ResponseEntity<?> recommendBestPlant(@AuthenticationPrincipal User user) {
         return ResponseEntity.status(200).body(aiService.recommendBestPlantForMe(user.getId()));
     }
+
     @GetMapping("/ai/filter-plants-by-location/{city}")
     public ResponseEntity<?> filterPlantsByLocation(@PathVariable String city) {
         return ResponseEntity.status(200).body(aiService.filterPlantsByLocation(city));
     }
-
 
 
     @PostMapping("/identify/{organ}")
@@ -90,5 +93,16 @@ public class AIController {
     @GetMapping("/learn/water-planting")
     public ResponseEntity<?> LearnWaterPlantingAI(@AuthenticationPrincipal User user) {
         return ResponseEntity.status(200).body(aiService.waterPlantingLearningAI(user.getId()));
+    }
+
+    @GetMapping("/{plantId}")
+    public ResponseEntity<?> discoverPlant(@AuthenticationPrincipal User user, @PathVariable Integer plantId) {
+        return ResponseEntity.status(200).body(aiService.plantDiscoveryAI(user.getId(), plantId));
+    }
+
+    @PostMapping("/add/{plantName}")
+    public ResponseEntity<?> addPlantTypeUsingAI(@AuthenticationPrincipal User user, @PathVariable String plantName) {
+        aiService.addPlantTypeUsingAI(user.getId(),plantName);
+        return ResponseEntity.status(200).body(new ApiResponse("Plant type created successfully using AI"));
     }
 }
