@@ -184,16 +184,17 @@ public class FarmerService {
         return farmerRepository.findFarmerByUser_Address_City(city);
     }
 
-    public List<Farmer> getFarmersByExperience(Integer farmerExperience) {
-        return farmerRepository.findFarmerByFarmerExperience(farmerExperience);
-    }
 
     public List<Farmer> getFarmersByRank(String farmerRank) {
         return farmerRepository.findFarmerByFarmerRank(farmerRank);
     }
 
-    public List<Farmer> getFarmersByLevel(Integer levelId) {
-        return farmerRepository.findFarmerByLevel_Id(levelId);
+    public List<Farmer> getFarmersByLevel(Integer minLevel, Integer maxLevel) {
+        return farmerRepository.findFarmerByMinAndMaxLevels(minLevel,maxLevel);
+    }
+
+    public List<Farmer> getMostExperiencedFarmer() {
+        return farmerRepository.findMostExperiencedFarmer();
     }
 
     public List<Farmer> getFarmersWhoPlantedPlant(String plantName) {

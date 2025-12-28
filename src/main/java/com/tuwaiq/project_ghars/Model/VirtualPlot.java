@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,21 +21,47 @@ public class VirtualPlot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty
-    @Column(columnDefinition = "varchar(50) not null")
-    private String name;
+    @NotEmpty(message = "Sorry, the plot type can't be empty, please try again")
+    @Column()
+    private String plotType;
 
-    @NotEmpty
-    @Column(columnDefinition = "varchar(20) not null")
+    @Column()
+    private Integer progress;
+
+    @Column()
+    private Integer health;
+
+    @Column()
     private String status;
 
-    @Column(columnDefinition = "double")
-    private Double sunMeter;
+    @Column()
+    private Integer expectedYield;
 
-    @Column(columnDefinition = "double")
-    private Double waterMeter;
+    @Column()
+    private Integer actualYield;
+
+    @Column()
+    private Integer experienceGiven;
+
+    @Column()
+    private Integer knowledgeMeter;
+
+    @Column()
+    private Integer waterMeter;
+
+    @Column()
+    private Integer sunMeter;
+
+    @Column()
+    private String verificationPic;
+
+    @Column()
+    private LocalDateTime plantedAt;
 
     @ManyToOne
     @JsonIgnore
     private VirtualFarm virtualFarm;
+
+    @ManyToOne
+    private PlantType plantType;
 }

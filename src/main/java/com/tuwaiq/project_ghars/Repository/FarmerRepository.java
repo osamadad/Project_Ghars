@@ -16,9 +16,11 @@ public interface FarmerRepository extends JpaRepository<Farmer, Integer> {
 
     List<Farmer> findFarmerByFarmerRank(String farmerRank);
 
-    List<Farmer> findFarmerByFarmerExperience(Integer farmerExperience);
+    @Query("select farmer from Farmer farmer where farmer.level.levelNumber>=?1 and farmer.level.levelNumber<=2")
+    List<Farmer> findFarmerByMinAndMaxLevels(Integer minLevel, Integer maxLevel);
 
-    List<Farmer> findFarmerByLevel_Id(Integer levelId);
+    @Query("select farmer from Farmer farmer order by farmer.level.levelNumber")
+    List<Farmer> findMostExperiencedFarmer();
 
     @Query("select farmer from Farmer farmer join farmer.farms farm join farm.fields field join field.plantTypes plant where plant.commonName=?1 and field.status='Harvested'")
     List<Farmer> getFarmerWhoPlantedThisPlant(String plantName);

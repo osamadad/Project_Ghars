@@ -83,12 +83,12 @@ public class AIController {
     }
 
     @GetMapping("/learn/green-house")
-    public ResponseEntity<?> LearnGreenHouseAI() {
-        return ResponseEntity.status(200).body(aiService.greenHouseLearningAI());
+    public ResponseEntity<?> LearnGreenHouseAI(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(aiService.greenHouseLearningAI(user.getId()));
     }
 
     @GetMapping("/learn/water-planting")
-    public ResponseEntity<?> LearnWaterPlantingAI() {
-        return ResponseEntity.status(200).body(aiService.waterPlantingLearningAI());
+    public ResponseEntity<?> LearnWaterPlantingAI(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(aiService.waterPlantingLearningAI(user.getId()));
     }
 }

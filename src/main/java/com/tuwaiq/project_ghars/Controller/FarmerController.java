@@ -50,14 +50,19 @@ public class FarmerController {
         return ResponseEntity.status(200).body(farmerService.getFarmersByCity(city));
     }
 
-    @GetMapping("/by-experience/{experience}")
-    public ResponseEntity<?> getFarmersByExperience(@AuthenticationPrincipal User user, @PathVariable String experience) {
-        return ResponseEntity.status(200).body(farmerService.getFarmersByExperience(experience));
+    @GetMapping("/by-rank/{rank}")
+    public ResponseEntity<?> getFarmersByRank(@AuthenticationPrincipal User user, @PathVariable String rank) {
+        return ResponseEntity.status(200).body(farmerService.getFarmersByRank(rank));
     }
 
-    @GetMapping("/by-level/{level}")
-    public ResponseEntity<?> getFarmersByLevel(@AuthenticationPrincipal User user, @PathVariable String level) {
-        return ResponseEntity.status(200).body(farmerService.getFarmersByLevel(level));
+    @GetMapping("/by-level/{minLevel}/{maxLevel}")
+    public ResponseEntity<?> getFarmersByMinAndMaxLevel(@AuthenticationPrincipal User user, @PathVariable Integer minLevel, @PathVariable Integer maxLevel) {
+        return ResponseEntity.status(200).body(farmerService.getFarmersByLevel(minLevel,maxLevel));
+    }
+
+    @GetMapping("/most-level")
+    public ResponseEntity<?> getMostExperiencedFarmer(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(farmerService.getMostExperiencedFarmer());
     }
 
     @GetMapping("/planted/{plantName}")

@@ -5,10 +5,7 @@ import com.tuwaiq.project_ghars.DTOout.GreenHouseLearningDTOOut;
 import com.tuwaiq.project_ghars.DTOout.RecommendedEventDTOOut;
 import com.tuwaiq.project_ghars.DTOout.SeasonPlantDTOOut;
 import com.tuwaiq.project_ghars.DTOout.WaterPlantingLearningDTOOut;
-import com.tuwaiq.project_ghars.Model.Event;
-import com.tuwaiq.project_ghars.Model.Farmer;
-import com.tuwaiq.project_ghars.Model.PlantType;
-import com.tuwaiq.project_ghars.Model.User;
+import com.tuwaiq.project_ghars.Model.*;
 import com.tuwaiq.project_ghars.Repository.EventRepository;
 import com.tuwaiq.project_ghars.Repository.FarmerRepository;
 import com.tuwaiq.project_ghars.Repository.PlantTypeRepository;
@@ -30,8 +27,8 @@ import java.util.Map;
 public class AIService {
 
     private final EventRepository eventRepository;
-    private final UserRepository userRepository ;
-    private final FarmerRepository farmerRepository ;
+    private final UserRepository userRepository;
+    private final FarmerRepository farmerRepository;
     private final ObjectMapper objectMapper;
     private final PlantTypeRepository plantTypeRepository;
     @Value("${openai.api-key}")
@@ -76,18 +73,25 @@ public class AIService {
         return message.get("content").toString();
     }
 
-    public GreenHouseLearningDTOOut greenHouseLearningAI() {
-
+    public GreenHouseLearningDTOOut greenHouseLearningAI(Integer userId) {
+        Farmer farmer = farmerRepository.findFarmerById(userId);
+        if (farmer==null){
+            throw new ApiException("Farmer not found");
+        }
         String prompt = """
-                You are an AI plant education expert specialized in teaching beginners about greenhouses.
-                
-                Teach greenhouse concepts in an educational-first way.
-                Do NOT give step-by-step construction instructions.
-                Do NOT include tools, materials, measurements, or costs.
-                Focus on understanding, benefits, limitations, and decision-making.
-                
-                Return ONLY valid JSON in this exact format:
-                
+                أنت خبير ذكاء اصطناعي في تعليم النباتات، ومتخصص في تعليم المبتدئين عن البيوت المحمية
+                (الصوبات الزراعية).
+
+                علّم مفاهيم البيوت المحمية بأسلوب تعليمي يركّز على الفهم أولًا.
+                لا تقدّم تعليمات إنشاء خطوة بخطوة.
+                لا تذكر أدوات أو مواد أو قياسات أو تكاليف.
+                ركّز على الفهم، والفوائد، والقيود، وكيفية اتخاذ القرار.
+
+                مستوى خبرة المزارع:
+                - %s
+
+                أعد ناتجًا بصيغة JSON صالحة فقط وبهذا التنسيق الدقيق:
+
                 {
                   "definition": "",
                   "benefits": [],
@@ -99,8 +103,11 @@ public class AIService {
                   "commonMisconceptions": [],
                   "aiSummary": ""
                 }
-                
-                """;
+
+                """.formatted(
+                farmer.getFarmerRank()
+        );
+
 
         String response = askAI(prompt);
 
@@ -109,18 +116,25 @@ public class AIService {
         return dto;
     }
 
-    public WaterPlantingLearningDTOOut waterPlantingLearningAI() {
-
+    public WaterPlantingLearningDTOOut waterPlantingLearningAI(Integer userId) {
+        Farmer farmer = farmerRepository.findFarmerById(userId);
+        if (farmer==null){
+            throw new ApiException("Farmer not found");
+        }
         String prompt = """
-                You are an AI plant education expert specialized in teaching beginners about water planting (growing plants in water).
-                
-                Teach water planting concepts in an educational-first way.
-                Do NOT give step-by-step setup instructions.
-                Do NOT include tools, equipment, measurements, nutrient ratios, or costs.
-                Focus on understanding, benefits, limitations, and decision-making.
-                
-                Return ONLY valid JSON in this exact format:
-                
+                أنت خبير ذكاء اصطناعي في تعليم النباتات، ومتخصص في تعليم المبتدئين الزراعة المائية
+                (زراعة النباتات في الماء).
+
+                علّم مفاهيم الزراعة المائية بأسلوب تعليمي يركّز على الفهم أولًا.
+                لا تقدّم إرشادات إعداد خطوة بخطوة.
+                لا تذكر أدوات أو معدات أو قياسات أو نسب مغذيات أو تكاليف.
+                ركّز على الفهم، والفوائد، والقيود، وكيفية اتخاذ القرار.
+
+                مستوى خبرة المزارع:
+                - %s
+
+                أعد ناتجًا بصيغة JSON صالحة فقط وبهذا التنسيق الدقيق:
+
                 {
                   "definition": "",
                   "benefits": [],
@@ -132,8 +146,10 @@ public class AIService {
                   "commonMisconceptions": [],
                   "aiSummary": ""
                 }
-                
-                """;
+
+                """.formatted(
+                farmer.getFarmerRank()
+        );
 
 
         String response = askAI(prompt);
@@ -145,54 +161,53 @@ public class AIService {
 
     public String soilAndSeeds(Integer farmerId) {
         Farmer farmer = farmerRepository.findFarmerById(farmerId);
-        String prompt = buildPrompt("التربة والبذور", farmer.getLevel(), farmer.getExperience());
+        String prompt = buildPrompt("التربة والبذور", farmer.getFarmerRank());
         return askAI(prompt);
     }
 
     public String homeGardening(Integer farmerId) {
         Farmer farmer = farmerRepository.findFarmerById(farmerId);
-        String prompt = buildPrompt("الزراعة المنزلية", farmer.getLevel(), farmer.getExperience());
+        String prompt = buildPrompt("الزراعة المنزلية", farmer.getFarmerRank());
         return askAI(prompt);
     }
 
     public String wateringAndFertilizing(Integer farmerId) {
         Farmer farmer = farmerRepository.findFarmerById(farmerId);
-        String prompt = buildPrompt("الري والتسميد", farmer.getLevel(), farmer.getExperience());
+        String prompt = buildPrompt("الري والتسميد", farmer.getFarmerRank());
         return askAI(prompt);
     }
 
     public String plantCare(Integer farmerId) {
         Farmer farmer = farmerRepository.findFarmerById(farmerId);
-        String prompt = buildPrompt("العناية بالنباتات", farmer.getLevel(), farmer.getExperience());
+        String prompt = buildPrompt("العناية بالنباتات", farmer.getFarmerRank());
         return askAI(prompt);
     }
 
     public String plantProblems(Integer farmerId) {
         Farmer farmer = farmerRepository.findFarmerById(farmerId);
-        String prompt = buildPrompt("مشاكل النباتات", farmer.getLevel(), farmer.getExperience());
+        String prompt = buildPrompt("مشاكل النباتات", farmer.getFarmerRank());
         return askAI(prompt);
     }
 
-    private String buildPrompt(String topic, String level, String experience) {
+    private String buildPrompt(String topic, String farmerRank) {
 
-        String normalizedLevel = (level == null) ? "BEGINNER" : level.trim().toUpperCase();
+        String normalizedLevel = (farmerRank == null) ? "BEGINNER" : farmerRank.trim().toUpperCase();
 
         return """
-        أنت مساعد زراعي لمنصة "غرس".
-        اشرح موضوع: %s
-        بناءً على مستوى المزارع: %s
-        وبناءً على خبرته (كما كتبها): %s
-
-        المطلوب:
-        - اكتب بالعربي وبأسلوب بسيط وواضح مناسب للمستوى.
-        - أعطني:
-          1) مقدمة سطرين
-          2) خطوات عملية مرقمة (5 إلى 8 خطوات)
-          3) أخطاء شائعة (3 إلى 5)
-          4) نصائح سريعة (3 إلى 5)
-          5) "وش أسوي الحين؟" خطوة واحدة قابلة للتنفيذ اليوم
-        - لا تكتب كلام عام، خليها عملية ومباشرة.
-        """.formatted(topic, normalizedLevel, (experience == null ? "غير محددة" : experience));
+                أنت مساعد زراعي لمنصة "غرس".
+                اشرح موضوع: %s
+                بناءً على مستوى المزارع: %s
+                
+                المطلوب:
+                - اكتب بالعربي وبأسلوب بسيط وواضح مناسب للمستوى.
+                - أعطني:
+                  1) مقدمة سطرين
+                  2) خطوات عملية مرقمة (5 إلى 8 خطوات)
+                  3) أخطاء شائعة (3 إلى 5)
+                  4) نصائح سريعة (3 إلى 5)
+                  5) "وش أسوي الحين؟" خطوة واحدة قابلة للتنفيذ اليوم
+                - لا تكتب كلام عام، خليها عملية ومباشرة.
+                """.formatted(topic, normalizedLevel);
     }
 
     public RecommendedEventDTOOut recommendBestEvent(Integer farmerId) {
@@ -206,25 +221,23 @@ public class AIService {
         String eventsText = buildEventsText(events);
 
         String prompt = """
-    أنت مساعد لمنصة "غرس".
-    اختر أفضل فعالية واحدة فقط من القائمة التالية للمزارع بناءً على:
-    - مستوى المزارع: %s
-    - خبرته: %s
-
-    قائمة الإيفنتات (اختر ID واحد فقط من القائمة):
-    %s
-
-    المطلوب:
-    - اختر Event واحدة فقط من القائمة (لا تختر شيء خارجها).
-    - أرجع الرد بصيغة JSON فقط بدون أي نص إضافي:
-    {
-      "eventId": 1,
-      "reason": "سبب الاختيار في 2-3 أسطر",
-      "whatToPrepare": "3 نقاط تجهيز قبل الحضور"
-    }
-    """.formatted(
-                farmer.getLevel(),
-                farmer.getExperience(),
+                أنت مساعد لمنصة "غرس".
+                اختر أفضل فعالية واحدة فقط من القائمة التالية للمزارع بناءً على:
+                - مستوى خبرة المزارع: %s
+                
+                قائمة الإيفنتات (اختر ID واحد فقط من القائمة):
+                %s
+                
+                المطلوب:
+                - اختر Event واحدة فقط من القائمة (لا تختر شيء خارجها).
+                - أرجع الرد بصيغة JSON فقط بدون أي نص إضافي:
+                {
+                  "eventId": 1,
+                  "reason": "سبب الاختيار في 2-3 أسطر",
+                  "whatToPrepare": "3 نقاط تجهيز قبل الحضور"
+                }
+                """.formatted(
+                farmer.getFarmerRank(),
                 eventsText
         );
 
@@ -274,7 +287,6 @@ public class AIService {
     }
 
 
-
     public List<SeasonPlantDTOOut> getSeasonPlants(String season) {
 
         if (season == null || season.isBlank()) {
@@ -298,17 +310,17 @@ public class AIService {
         }
 
         String prompt = """
-        أنت خبير زراعي.
-        هذه قائمة نباتات مناسبة لموسم %s:
-        %s
-
-        المطلوب:
-        - اختر أفضل النباتات للمزارع
-        - اكتب سبب قصير لكل نبات (سطر واحد)
-        - لا تذكر خطوات زراعة
-        - رجع النتيجة بصيغة:
-        PlantName: reason
-        """.formatted(season, plantsInfo);
+                أنت خبير زراعي.
+                هذه قائمة نباتات مناسبة لموسم %s:
+                %s
+                
+                المطلوب:
+                - اختر أفضل النباتات للمزارع
+                - اكتب سبب قصير لكل نبات (سطر واحد)
+                - لا تذكر خطوات زراعة
+                - رجع النتيجة بصيغة:
+                PlantName: reason
+                """.formatted(season, plantsInfo);
 
         String aiResponse = askAI(prompt);
 
@@ -332,23 +344,23 @@ public class AIService {
             throw new ApiException("Season is required");
 
         String prompt = """
-        أنت خبير زراعي ذكي.
-        
-        أعطني جدول ري ذكي للنبات التالي:
-        - النبات: %s
-        - الموسم: %s
-        - الموقع: %s
-        
-        المطلوب:
-        - عدد مرات الري بالأسبوع
-        - أفضل وقت للري
-        - نصيحة مهمة (تحذير أو ملاحظة)
-        - اكتب بالعربي
-        - بدون خطوات طويلة
-        - بدون كلام عام
-        
-        رجّع النتيجة كنص واضح وجاهز للعرض.
-        """.formatted(
+                أنت خبير زراعي ذكي.
+                
+                أعطني جدول ري ذكي للنبات التالي:
+                - النبات: %s
+                - الموسم: %s
+                - الموقع: %s
+                
+                المطلوب:
+                - عدد مرات الري بالأسبوع
+                - أفضل وقت للري
+                - نصيحة مهمة (تحذير أو ملاحظة)
+                - اكتب بالعربي
+                - بدون خطوات طويلة
+                - بدون كلام عام
+                
+                رجّع النتيجة كنص واضح وجاهز للعرض.
+                """.formatted(
                 plant,
                 season,
                 (location == null ? "غير محدد" : location)
@@ -367,22 +379,20 @@ public class AIService {
         Farmer farmer = user.getFarmer();
 
         String prompt = """
-        أنت خبير زراعي.
-        
-        أعطني اقتراح نبات مناسب لهذا المزارع:
-        - مستوى الخبرة: %s
-        - الخبرة العملية: %s
-        
-        المطلوب:
-        - اسم النبات
-        - سبب مختصر
-        - ليش مناسب لمستواه
-        - بدون خطوات زراعة
-        - بالعربي
-        - سطرين فقط
-        """.formatted(
-                farmer.getLevel(),
-                farmer.getExperience()
+                أنت خبير زراعي.
+                
+                أعطني اقتراح نبات مناسب لهذا المزارع:
+                - مستوى الخبرة: %s
+                
+                المطلوب:
+                - اسم النبات
+                - سبب مختصر
+                - ليش مناسب لمستواه
+                - بدون خطوات زراعة
+                - بالعربي
+                - سطرين فقط
+                """.formatted(
+                farmer.getFarmerRank()
         );
 
         return askAI(prompt);
@@ -391,24 +401,116 @@ public class AIService {
     public String filterPlantsByLocation(String city) {
 
         String prompt = """
-        أنت خبير زراعي.
-        المدينة: %s
-
-        المطلوب:
-        - اقترح نباتات مناسبة للزراعة في هذه المدينة
-        - صنّف كل نبات حسب الصعوبة: (سهل / صعب)
-        - لا تذكر خطوات زراعة
-        - لا تذكر طقس رقمي
-        - رجّع النتيجة بهذا الشكل فقط:
-
-        🌱 النبات:
-        - الاسم: ...
-        - المستوى: سهل / صعب
-        - السبب: سطر واحد
-
-        """.formatted(city);
+                أنت خبير زراعي.
+                المدينة: %s
+                
+                المطلوب:
+                - اقترح نباتات مناسبة للزراعة في هذه المدينة
+                - صنّف كل نبات حسب الصعوبة: (سهل / صعب)
+                - لا تذكر خطوات زراعة
+                - لا تذكر طقس رقمي
+                - رجّع النتيجة بهذا الشكل فقط:
+                
+                🌱 النبات:
+                - الاسم: ...
+                - المستوى: سهل / صعب
+                - السبب: سطر واحد
+                
+                """.formatted(city);
 
         return askAI(prompt);
+    }
+
+    public VirtualPlot convertPlantToVirtualPlot(PlantType plantType) {
+
+        String prompt = """
+                أنت محرّك منطق لعبة حتمي مسؤول عن توليد قيم حالة النبات التي يتحكّم بها النظام.
+                لا تستنتج أو تختلق أي بيانات خارج القواعد.
+                أعد **JSON صالح فقط** وبنفس التنسيق المحدّد حرفيًا.
+                
+                تنسيق ناتج JSON:
+                {
+                  "progress": 0,
+                  "health": 0,
+                  "status": "",
+                  "expectedYield": 0,
+                  "actualYield": 0,
+                  "experienceGiven": 0,
+                  "knowledgeMeter": 0,
+                  "waterMeter": 0,
+                  "sunMeter": 0,
+                  "verificationPic": null,
+                  "plantedAt": ""
+                }
+                
+                بيانات النبات:
+                - سرعة النمو: %s
+                - مستوى الصعوبة: %s
+                - احتياج الماء: %s
+                - احتياج الشمس: %s
+                
+                القواعد:
+                
+                التقدّم (Progress):
+                - بطيء   -> الحد الأقصى للتقدّم = 60
+                - طبيعي  -> الحد الأقصى للتقدّم = 80
+                - سريع   -> الحد الأقصى للتقدّم = 100
+                - يجب أن تكون قيمة التقدّم الابتدائية 0
+                
+                الصحة (Health):
+                - دائمًا 100
+                
+                الحالة (Status):
+                - دائمًا "growing"
+                
+                المحصول المتوقع (يزداد مع الصعوبة):
+                - سهل    -> 8
+                - متوسط  -> 15
+                - صعب    -> 25
+                
+                المحصول الفعلي (Actual Yield):
+                - دائمًا 0
+                
+                الخبرة المكتسبة (Experience Given):
+                - سهل    -> 50
+                - متوسط  -> 100
+                - صعب    -> 200
+                
+                مقياس المعرفة (Knowledge Meter):
+                - دائمًا 0
+                
+                مقياس الماء (Water Meter):
+                - القيمة الأساسية = 50
+                - منخفض  -> الحد الأقصى = 70
+                - متوسط  -> الحد الأقصى = 100
+                - مرتفع  -> الحد الأقصى = 130
+                - القيمة الابتدائية = (50 + الحد الأقصى) / 2
+                
+                مقياس الشمس (Sun Meter):
+                - القيمة الأساسية = 50
+                - منخفض  -> الحد الأقصى = 70
+                - متوسط  -> الحد الأقصى = 100
+                - مرتفع  -> الحد الأقصى = 130
+                - القيمة الابتدائية = (50 + الحد الأقصى) / 2
+                
+                صورة التحقق (Verification Picture):
+                - دائمًا null
+                
+                تاريخ الزراعة (Planted At):
+                - التاريخ والوقت الحاليان بصيغة ISO-8601
+                """.formatted(
+                plantType.getGrowthSpeed(),
+                plantType.getDifficultyLevel(),
+                plantType.getWaterNeeds(),
+                plantType.getSunNeeds()
+        );
+
+        String response = askAI(prompt);
+
+        VirtualPlot virtualPlot = objectMapper.readValue(response, VirtualPlot.class);
+
+        return virtualPlot;
+
     }
 
 }
