@@ -31,7 +31,7 @@ public class Order {
 
     @NotNull(message = "Total price is required")
     @Positive(message = "Total price must be greater than zero")
-    private Integer totalPrice;
+    private Double totalPrice;
 
     @NotNull(message = "Order creation date is required")
     private LocalDateTime createdAt;
