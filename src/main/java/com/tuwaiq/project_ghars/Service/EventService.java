@@ -103,29 +103,40 @@ public class EventService {
         eventRepository.delete(event);
     }
 
-    public void joinEvent(Integer userId, Integer eventId) {
 
+    public void joinEvent(Integer userId, Integer eventId) {
         User user = userRepository.findUserById(userId);
         if (user == null)
             throw new ApiException("User not found");
 
         Event event = eventRepository.findEventById(eventId);
-        if (event == null)
+            if (event == null)
             throw new ApiException("Event not found");
 
         if (event.getUsers().contains(user))
             throw new ApiException("You already joined this event");
 
+        for (Event userEvent : user.getEvents()) {
+
+            if (!userEvent.getDate().equals(event.getDate()))
+                continue;
+
+            boolean isOverlapping =
+                    event.getStartTime().isBefore(userEvent.getEndTime()) && event.getEndTime().isAfter(userEvent.getStartTime());
+            if (isOverlapping) {
+                throw new ApiException(
+                        "You have another event that conflicts with this time"
+                );
+            }
+        }
         event.getUsers().add(user);
         eventRepository.save(event);
-
         String subject = "تم تسجيلك في فعالية 🌿";
         String body = "مرحبًا " + user.getName() + "\n\n" +
                 "تم تسجيلك في فعالية: " + event.getTitle() + "\n" +
                 "الموقع: " + event.getLocation() + "\n" +
                 "التاريخ: " + event.getDate() + "\n" +
                 "الوقت: " + event.getStartTime() + " - " + event.getEndTime();
-
         emailService.sendEmail(user.getEmail(), subject, body);
     }
 
