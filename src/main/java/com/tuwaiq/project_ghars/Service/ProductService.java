@@ -26,11 +26,9 @@ public class ProductService {
     public List<Product> getAllProducts(Integer userId) {
 
         User user = userRepository.findUserById(userId);
-        if (user == null)
-            throw new ApiException("User not found");
+        if (user == null) throw new ApiException("User not found");
 
-        if (!user.getRole().equals("ADMIN"))
-            throw new ApiException("Access denied");
+        if (!user.getRole().equals("ADMIN")) throw new ApiException("Access denied");
 
         return productRepository.findAll();
     }
@@ -38,36 +36,26 @@ public class ProductService {
     public List<Product> getMyProducts(Integer userId) {
 
         User user = userRepository.findUserById(userId);
-        if (user == null)
-            throw new ApiException("User not found");
+        if (user == null) throw new ApiException("User not found");
 
-        if (!user.getRole().equals("FARMER"))
-            throw new ApiException("Only farmer can access this");
+        if (!user.getRole().equals("FARMER")) throw new ApiException("Only farmer can access this");
 
-        return stockRepository
-                .findStockByProduct_Farm_Farmer_Id(user.getFarmer().getId())
-                .stream()
-                .map(Stock::getProduct)
-                .collect(Collectors.toList());
+        return stockRepository.findStockByProduct_Farm_Farmer_Id(user.getFarmer().getId()).stream().map(Stock::getProduct).collect(Collectors.toList());
     }
 
     public void addProduct(Integer userId, Product product) {
 
         User user = userRepository.findUserById(userId);
-        if (user == null)
-            throw new ApiException("User not found");
+        if (user == null) throw new ApiException("User not found");
 
         if (!(user.getRole().equals("FARMER") || user.getRole().equals("ADMIN")))
             throw new ApiException("Only farmer or admin can add product");
 
-        if (product.getPrice() <= 0)
-            throw new ApiException("Price must be greater than zero");
+        if (product.getPrice() <= 0) throw new ApiException("Price must be greater than zero");
 
-        if (product.getIsActive() == null)
-            throw new ApiException("Product active status is required");
+        if (product.getIsActive() == null) throw new ApiException("Product active status is required");
 
-        if (product.getStock() == null)
-            throw new ApiException("Product must have stock");
+        if (product.getStock() == null) throw new ApiException("Product must have stock");
 
         product.getStock().setLastUpdate(LocalDateTime.now());
         productRepository.save(product);
@@ -76,18 +64,15 @@ public class ProductService {
     public void updateProduct(Integer userId, Integer productId, Product product) {
 
         User user = userRepository.findUserById(userId);
-        if (user == null)
-            throw new ApiException("User not found");
+        if (user == null) throw new ApiException("User not found");
 
         if (!(user.getRole().equals("FARMER") || user.getRole().equals("ADMIN")))
             throw new ApiException("Only farmer or admin can update product");
 
         Product oldProduct = productRepository.findProductById(productId);
-        if (oldProduct == null)
-            throw new ApiException("Product not found");
+        if (oldProduct == null) throw new ApiException("Product not found");
 
-        if (product.getPrice() <= 0)
-            throw new ApiException("Price must be greater than zero");
+        if (product.getPrice() <= 0) throw new ApiException("Price must be greater than zero");
 
         oldProduct.setName(product.getName());
         oldProduct.setDescription(product.getDescription());
@@ -102,16 +87,47 @@ public class ProductService {
     public void deleteProduct(Integer userId, Integer productId) {
 
         User user = userRepository.findUserById(userId);
-        if (user == null)
-            throw new ApiException("User not found");
+        if (user == null) throw new ApiException("User not found");
 
-        if (!user.getRole().equals("ADMIN"))
-            throw new ApiException("Only admin can delete product");
+        if (!user.getRole().equals("ADMIN")) throw new ApiException("Only admin can delete product");
 
         Product product = productRepository.findProductById(productId);
-        if (product == null)
-            throw new ApiException("Product not found");
+        if (product == null) throw new ApiException("Product not found");
 
         productRepository.delete(product);
+    }
+
+    public List<Product> getProductsBySellType(Integer userId, String sellType) {
+
+        User user = userRepository.findUserById(userId);
+        if (user == null) {
+            throw new ApiException("User not found");
+        }
+
+        return productRepository.findProductBySellType(sellType);
+    }
+
+    public List<Product> getProductsOrderByPriceAsc(Integer userId) {
+
+        User user = userRepository.findUserById(userId);
+        if (user == null) {
+            throw new ApiException("User not found");
+        }
+
+        return productRepository.findAllByOrderByPriceAsc();
+    }
+
+    public List<Product> getProductsByMinAndMaxPrice(Integer userId, Integer minPrice, Integer maxPrice) {
+
+        User user = userRepository.findUserById(userId);
+        if (user == null) {
+            throw new ApiException("User not found");
+        }
+
+        if (minPrice > maxPrice) {
+            throw new ApiException("Sorry, minimum price cannot be greater than maximum price, please try again");
+        }
+
+        return productRepository.getProductWithMinAndMaxPrice(minPrice, maxPrice);
     }
 }
