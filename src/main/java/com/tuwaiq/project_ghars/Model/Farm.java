@@ -47,4 +47,8 @@ public class Farm {
     @JsonIgnore
     private Set<Field> fields;
 
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "farm")
+    @JsonIgnore
+    private Set<Review> reviews;
+
 }
