@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +52,10 @@ public class FarmerService {
         farmer.setLevel(farmerDTOIn.getLevel());
 
         farmerRepository.save(farmer);
+    }
+
+    public List<Farmer> getAllFarmer(){
+        return farmerRepository.findAll();
     }
 
     public Farmer getMyFarmer(Integer userId) {
@@ -134,5 +139,21 @@ public class FarmerService {
 
         farmerRepository.delete(farmer);
         userRepository.delete(user);
+    }
+
+    public List<Farmer> getFarmersByCity(String city) {
+        return farmerRepository.findFarmerByUser_Address_City(city);
+    }
+
+    public List<Farmer> getFarmersByExperience(String experience) {
+        return farmerRepository.findFarmerByExperience(experience);
+    }
+
+    public List<Farmer> getFarmersByLevel(String level) {
+        return farmerRepository.findFarmerByLevel(level);
+    }
+
+    public List<Farmer> getFarmersWhoPlantedPlant(String plantName) {
+        return farmerRepository.getFarmerWhoPlantedThisPlant(plantName);
     }
 }

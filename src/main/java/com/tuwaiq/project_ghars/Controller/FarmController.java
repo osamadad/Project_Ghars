@@ -28,9 +28,9 @@ public class FarmController {
         return ResponseEntity.status(200).body(farmService.getAllFarms());
     }
 
-    @GetMapping("/get/{farmId}")
-    public ResponseEntity<?> getFarmById(@AuthenticationPrincipal User user, @PathVariable Integer farmId) {
-        return ResponseEntity.status(200).body(farmService.getMyFarm(user.getId(),farmId));
+    @GetMapping("/get-my-farm")
+    public ResponseEntity<?> getMyFarm(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(farmService.getMyFarm(user.getId()));
     }
 
     @PutMapping("/update/{farmId}")

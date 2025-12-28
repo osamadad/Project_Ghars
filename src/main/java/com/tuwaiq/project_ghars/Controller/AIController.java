@@ -4,16 +4,22 @@ import com.tuwaiq.project_ghars.DTOIn.SmartIrrigationDTOIn;
 import com.tuwaiq.project_ghars.Model.User;
 import com.tuwaiq.project_ghars.Service.AIService;
 import jakarta.validation.Valid;
+import com.tuwaiq.project_ghars.Service.PlantNetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/va/ai")
 @RequiredArgsConstructor
 public class AIController {
+
     private final AIService aiService ;
+    private final PlantNetService plantNetService;
 
     @GetMapping("/soil-seeds")
     public ResponseEntity<?> soilSeeds(@AuthenticationPrincipal User user) {
@@ -63,4 +69,26 @@ public class AIController {
     }
 
 
+
+    @PostMapping("/identify/{organ}")
+    public ResponseEntity<?> identifyPlant(@RequestBody MultipartFile image, @PathVariable String organ) throws IOException {
+        String result = plantNetService.identifyPlant(image, organ);
+        return ResponseEntity.status(200).body(result);
+    }
+
+    @PostMapping("/identify-diseases/{organ}")
+    public ResponseEntity<?> identifyPlantDiseases(@RequestBody MultipartFile image, @PathVariable String organ) throws IOException {
+        String result = plantNetService.identifyPlantDiseases(image, organ);
+        return ResponseEntity.status(200).body(result);
+    }
+
+    @GetMapping("/learn/green-house")
+    public ResponseEntity<?> LearnGreenHouseAI() {
+        return ResponseEntity.status(200).body(aiService.greenHouseLearningAI());
+    }
+
+    @GetMapping("/learn/water-planting")
+    public ResponseEntity<?> LearnWaterPlantingAI() {
+        return ResponseEntity.status(200).body(aiService.waterPlantingLearningAI());
+    }
 }
