@@ -1,13 +1,13 @@
 package com.tuwaiq.project_ghars.Controller;
 
+import com.tuwaiq.project_ghars.DTOIn.SmartIrrigationDTOIn;
 import com.tuwaiq.project_ghars.Model.User;
 import com.tuwaiq.project_ghars.Service.AIService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/va/ai")
@@ -44,4 +44,23 @@ public class AIController {
     public ResponseEntity<?> recommendEvent(@AuthenticationPrincipal User user) {
         return ResponseEntity.status(200).body(aiService.recommendBestEvent(user.getId()));
     }
+    @GetMapping("/ai/season-plants/{season}")
+    public ResponseEntity<?> getSeasonPlants(@PathVariable String season, @AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(aiService.getSeasonPlants(season));
+    }
+    @PostMapping("/ai/smart-irrigation")
+    public ResponseEntity<?> smartIrrigation(@RequestBody @Valid SmartIrrigationDTOIn dto) {
+        return ResponseEntity.status(200).body(aiService.smartIrrigationSchedule(dto.getPlant(), dto.getSeason(), dto.getLocation()));
+    }
+
+    @GetMapping("/ai/recommend-plant")
+    public ResponseEntity<?> recommendBestPlant(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(aiService.recommendBestPlantForMe(user.getId()));
+    }
+    @GetMapping("/ai/filter-plants-by-location/{city}")
+    public ResponseEntity<?> filterPlantsByLocation(@PathVariable String city) {
+        return ResponseEntity.status(200).body(aiService.filterPlantsByLocation(city));
+    }
+
+
 }

@@ -68,4 +68,5 @@ public class PlantTypeController {
     public ResponseEntity<?> LearnWaterPlantingAI() {
         return ResponseEntity.status(200).body(aiService.waterPlantingLearningAI());
     }
+
 }
