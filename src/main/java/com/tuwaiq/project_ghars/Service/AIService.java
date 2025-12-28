@@ -1,10 +1,7 @@
 package com.tuwaiq.project_ghars.Service;
 
 import com.tuwaiq.project_ghars.Api.ApiException;
-import com.tuwaiq.project_ghars.DTOout.GreenHouseLearningDTOOut;
-import com.tuwaiq.project_ghars.DTOout.RecommendedEventDTOOut;
-import com.tuwaiq.project_ghars.DTOout.SeasonPlantDTOOut;
-import com.tuwaiq.project_ghars.DTOout.WaterPlantingLearningDTOOut;
+import com.tuwaiq.project_ghars.DTOout.*;
 import com.tuwaiq.project_ghars.Model.*;
 import com.tuwaiq.project_ghars.Repository.EventRepository;
 import com.tuwaiq.project_ghars.Repository.FarmerRepository;
@@ -75,23 +72,23 @@ public class AIService {
 
     public GreenHouseLearningDTOOut greenHouseLearningAI(Integer userId) {
         Farmer farmer = farmerRepository.findFarmerById(userId);
-        if (farmer==null){
+        if (farmer == null) {
             throw new ApiException("Farmer not found");
         }
         String prompt = """
                 أنت خبير ذكاء اصطناعي في تعليم النباتات، ومتخصص في تعليم المبتدئين عن البيوت المحمية
                 (الصوبات الزراعية).
-
+                
                 علّم مفاهيم البيوت المحمية بأسلوب تعليمي يركّز على الفهم أولًا.
                 لا تقدّم تعليمات إنشاء خطوة بخطوة.
                 لا تذكر أدوات أو مواد أو قياسات أو تكاليف.
                 ركّز على الفهم، والفوائد، والقيود، وكيفية اتخاذ القرار.
-
+                
                 مستوى خبرة المزارع:
                 - %s
-
+                
                 أعد ناتجًا بصيغة JSON صالحة فقط وبهذا التنسيق الدقيق:
-
+                
                 {
                   "definition": "",
                   "benefits": [],
@@ -103,7 +100,7 @@ public class AIService {
                   "commonMisconceptions": [],
                   "aiSummary": ""
                 }
-
+                
                 """.formatted(
                 farmer.getFarmerRank()
         );
@@ -118,23 +115,23 @@ public class AIService {
 
     public WaterPlantingLearningDTOOut waterPlantingLearningAI(Integer userId) {
         Farmer farmer = farmerRepository.findFarmerById(userId);
-        if (farmer==null){
+        if (farmer == null) {
             throw new ApiException("Farmer not found");
         }
         String prompt = """
                 أنت خبير ذكاء اصطناعي في تعليم النباتات، ومتخصص في تعليم المبتدئين الزراعة المائية
                 (زراعة النباتات في الماء).
-
+                
                 علّم مفاهيم الزراعة المائية بأسلوب تعليمي يركّز على الفهم أولًا.
                 لا تقدّم إرشادات إعداد خطوة بخطوة.
                 لا تذكر أدوات أو معدات أو قياسات أو نسب مغذيات أو تكاليف.
                 ركّز على الفهم، والفوائد، والقيود، وكيفية اتخاذ القرار.
-
+                
                 مستوى خبرة المزارع:
                 - %s
-
+                
                 أعد ناتجًا بصيغة JSON صالحة فقط وبهذا التنسيق الدقيق:
-
+                
                 {
                   "definition": "",
                   "benefits": [],
@@ -146,7 +143,7 @@ public class AIService {
                   "commonMisconceptions": [],
                   "aiSummary": ""
                 }
-
+                
                 """.formatted(
                 farmer.getFarmerRank()
         );
@@ -510,6 +507,221 @@ public class AIService {
         VirtualPlot virtualPlot = objectMapper.readValue(response, VirtualPlot.class);
 
         return virtualPlot;
+
+    }
+
+    public PlantDiscoveryDTOOut plantDiscoveryAI(Integer farmerId, Integer plantId) {
+        Farmer farmer = farmerRepository.findFarmerById(farmerId);
+        if (farmer == null) {
+            throw new ApiException("Farmer not found");
+        }
+        PlantType plantType = plantTypeRepository.findPlantTypeById(plantId);
+        if (plantType == null) {
+            throw new ApiException("Plant not found");
+        }
+
+        String prompt = """
+                أنت مساعد تعليمي في مجال البستنة.
+                
+                مهمتك هي إنشاء تجربة اكتشاف نبات للمستخدم.
+                هذا ليس دليل زراعة ويجب ألّا يتضمن أي إرشادات خطوة بخطوة.
+                
+                الهدف هو مساعدة المستخدم على:
+                - فهم ماهية هذا النبات
+                - اتخاذ قرار بشأن رغبته في زراعته
+                - الشعور بالثقة والفضول تجاهه
+                
+                قم بتكييف النبرة وعمق الشرح حسب مستوى خبرة المزارع.
+                
+                أعد ناتجًا بصيغة JSON صالحة فقط وبهذا التنسيق الدقيق:
+                
+                {
+                  "overview": "",
+                  "whyGrowThisPlant": "",
+                  "timeToGrow": "",
+                  "plantNeeds": "",
+                  "growingExperience": "",
+                  "commonChallenges": "",
+                  "whoThisPlantIsGoodFor": "",
+                  "funFacts": []
+                }
+                
+                ملف المزارع:
+                - مستوى الخبرة: %s   // مبتدئ | متوسط | متقدم
+                
+                بيانات النبات:
+                - الاسم الشائع: %s
+                - الاسم العلمي: %s
+                - الفصيلة: %s
+                - التصنيف: %s
+                - دورة الحياة: %s
+                - الموطن الأصلي: %s
+                - سرعة النمو: %s
+                - الوقت المتوقع للنمو: %s
+                - الحجم: %s
+                - احتياج الماء: %s
+                - احتياج الشمس: %s
+                - وسط النمو: %s
+                - مكان الزراعة: %s
+                - الموسم: %s
+                - مستوى الصعوبة: %s
+                - المخاطر الشائعة: %s
+                
+                إرشادات الأقسام:
+                
+                overview:
+                قدّم وصفًا مختصرًا لماهية هذا النبات، وأصله، ولماذا يزرعه الناس عادةً.
+                
+                whyGrowThisPlant:
+                اشرح الأسباب الرئيسية التي قد تدفع شخصًا لاختيار زراعة هذا النبات، مثل الاستخدام أو المتعة أو القيمة.
+                
+                timeToGrow:
+                اشرح كيف يبدو وقت النمو المتوقع من ناحية عملية (الوتيرة، مقدار الصبر المطلوب)، دون استخدام جداول زمنية.
+                
+                plantNeeds:
+                لخّص احتياجات النبات من الماء والشمس ودرجة الحرارة والمساحة بلغة بسيطة وعامة.
+                لا تقدّم تعليمات أو قياسات أو روتين عناية.
+                
+                growingExperience:
+                صِف تجربة زراعة هذا النبات، بما في ذلك مستوى الاهتمام المطلوب، والحساسية، وسلوك النمو العام.
+                
+                commonChallenges:
+                اشرح أكثر المشكلات شيوعًا التي يواجهها المزارعون مع هذا النبات، دون تقديم حلول خطوة بخطوة.
+                
+                whoThisPlantIsGoodFor:
+                صِف نوع المزارع أو البيئة أو الحالة التي يناسبها هذا النبات أكثر.
+                
+                funFacts:
+                قدّم 2–3 حقائق ممتعة أو مفاجئة أو جذابة عن هذا النبات.
+                
+                القواعد:
+                - لا تتضمن أي إرشادات زراعة أو عناية خطوة بخطوة
+                - لا تتضمن قياسات أو نسب أو تفاصيل أسمدة
+                - لا تذكر حقول قواعد البيانات أو enums أو مصطلحات النظام
+                - حافظ على لغة ودّية، تعليمية، وتعزّز الثقة
+                - استخدم فقرات قصيرة وتفسيرات واضحة
+                """.formatted(
+                farmer.getFarmerRank(),
+                plantType.getCommonName(),
+                plantType.getScientificName(),
+                plantType.getFamily(),
+                plantType.getCategory(),
+                plantType.getLifeSpan(),
+                plantType.getNativeRegion(),
+                plantType.getGrowthSpeed(),
+                plantType.getExpectedTimeToGrow(),
+                plantType.getSize(),
+                plantType.getWaterNeeds(),
+                plantType.getSunNeeds(),
+                plantType.getGrowingMedium(),
+                plantType.getPlantingPlace(),
+                plantType.getSeason(),
+                plantType.getDifficultyLevel(),
+                plantType.getCommonRisks()
+        );
+
+        String response = askAI(prompt);
+
+        PlantDiscoveryDTOOut dto = objectMapper.readValue(response, PlantDiscoveryDTOOut.class);
+
+        return dto;
+
+    }
+
+    public void addPlantTypeUsingAI(Integer userId, String plantName) {
+
+        User user=userRepository.findUserById(userId);
+        if (user==null){
+            throw new ApiException("User not found");
+        }
+        if (!user.getRole().equalsIgnoreCase("ADMIN")){
+            throw new ApiException("You are not an admin");
+        }
+
+        String prompt = """
+                أنت مولِّد بيانات ذكاء اصطناعي لتطبيق بستنة.
+                
+                مهمتك هي إنشاء كيان نبات **كامل** باستخدام **اسم النبات المزوَّد فقط**.
+                سيتم حفظ الناتج مباشرة في قاعدة البيانات ويجب أن ينجح في جميع عمليات التحقق.
+                
+                قواعد مهمّة:
+                - أعد **JSON صالح فقط**
+                - لا تُدرج شروحات أو تعليقات أو نصًا إضافيًا
+                - لا تختلق قيم enum جديدة
+                - لا تترك أي حقل فارغ
+                - إذا وُجدت عدة قيم ممكنة، اختر الأكثر شيوعًا واعتمادًا
+                
+                أعد JSON **بالضبط** بهذا التنسيق:
+                
+                {
+                  "commonName": "",
+                  "scientificName": "",
+                  "family": "",
+                  "category": "",
+                  "lifeSpan": "",
+                  "nativeRegion": "",
+                  "growthSpeed": "",
+                  "expectedTimeToGrow": "",
+                  "size": "",
+                  "waterNeeds": "",
+                  "sunNeeds": "",
+                  "growingMedium": "",
+                  "plantingPlace": "",
+                  "season": "",
+                  "difficultyLevel": "",
+                  "commonRisks": ""
+                }
+                
+                القيم المسموح بها (يجب الالتزام بها حرفيًا):
+                
+                category:
+                - fruit | vegetable | flower | herb
+                
+                lifeSpan:
+                - annual | perennial | biennial
+                
+                growthSpeed:
+                - slow | normal | fast
+                
+                expectedTimeToGrow:
+                - الصيغة: رقم + مسافة + days | months | years
+                - أمثلة: "90 days"، "6 months"، "5 years"
+                
+                size:
+                - small | medium | large
+                
+                waterNeeds:
+                - low | medium | high
+                
+                sunNeeds:
+                - low | medium | high
+                
+                growingMedium:
+                - soil | water | both
+                
+                plantingPlace:
+                - indoor | outdoor | both
+                
+                season:
+                - winter | spring | summer | autumn
+                
+                difficultyLevel:
+                - easy | medium | hard
+                
+                commonRisks:
+                - واحدة أو أكثر من: overwatering, pests, disease, temperature_stress
+                - القيم المتعددة يجب فصلها بفواصل
+                - مثال: "overwatering,pests"
+                
+                بيانات الإدخال:
+                - اسم النبات: %s
+                """.formatted(plantName);
+
+        String response = askAI(prompt);
+
+        PlantType plantType = objectMapper.readValue(response, PlantType.class);
+
+        plantTypeRepository.save(plantType);
 
     }
 
