@@ -1,6 +1,7 @@
 package com.tuwaiq.project_ghars.Service;
 
 import com.tuwaiq.project_ghars.Api.ApiException;
+import com.tuwaiq.project_ghars.Config.Configuration;
 import com.tuwaiq.project_ghars.DTOIn.CustomerDTOIn;
 import com.tuwaiq.project_ghars.Model.Customer;
 import com.tuwaiq.project_ghars.Model.User;
@@ -18,7 +19,7 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final Configuration configuration;
 
     public void registerCustomer(CustomerDTOIn customerDTOIn) {
 
@@ -36,7 +37,7 @@ public class CustomerService {
 
         User user = new User();
         user.setUsername(customerDTOIn.getUsername());
-        user.setPassword(passwordEncoder.encode(customerDTOIn.getPassword()));
+        user.setPassword(configuration.passwordEncoder().encode(customerDTOIn.getPassword()));
         user.setName(customerDTOIn.getName());
         user.setEmail(customerDTOIn.getEmail());
         user.setPhoneNumber(customerDTOIn.getPhoneNumber());
@@ -103,7 +104,7 @@ public class CustomerService {
         }
 
         user.setUsername(customerDTOIn.getUsername());
-        user.setPassword(passwordEncoder.encode(customerDTOIn.getPassword()));
+        user.setPassword(configuration.passwordEncoder().encode(customerDTOIn.getPassword()));
         user.setName(customerDTOIn.getName());
         user.setEmail(customerDTOIn.getEmail());
         user.setPhoneNumber(customerDTOIn.getPhoneNumber());
