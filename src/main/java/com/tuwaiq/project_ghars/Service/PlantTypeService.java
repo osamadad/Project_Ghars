@@ -96,13 +96,6 @@ public class PlantTypeService {
         }
         oldPlantType.setSunNeeds(plantType.getSunNeeds());
 
-        if (!plantType.getTemperatureNeeds().matches("cold|medium|hot")) {
-            throw new ApiException(
-                    "Sorry, the plant temperature needs must be cold, medium, or hot, please try again"
-            );
-        }
-        oldPlantType.setTemperatureNeeds(plantType.getTemperatureNeeds());
-
         if (!plantType.getGrowingMedium().matches("soil|water|both")) {
             throw new ApiException(
                     "Sorry, the growing medium must be soil, water, or both, please try again"

@@ -37,6 +37,7 @@ public class VirtualFarmService {
         }
 
         virtualFarm.setId(null);
+        //virtualFarm.setPlots();
         virtualFarm.setFarmer(farmer);
 
         virtualFarmRepository.save(virtualFarm);
@@ -104,7 +105,7 @@ public class VirtualFarmService {
             throw new ApiException("You are not allowed to update this virtual farm");
         }
 
-        virtualFarm.setField(virtualFarmRequest.getField());
+        virtualFarm.setName(virtualFarmRequest.getName());
 
         virtualFarmRepository.save(virtualFarm);
     }
