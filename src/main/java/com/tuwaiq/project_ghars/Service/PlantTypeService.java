@@ -162,7 +162,66 @@ public class PlantTypeService {
         plantTypeRepository.delete(plantType);
     }
 
+    public List<PlantType> getPlantTypesByFamily(Integer userId, String family) {
+        checkUser(userId);
+        return plantTypeRepository.findPlantTypeByFamily(family);
+    }
 
+    public List<PlantType> getPlantTypesByCategory(Integer userId, String category) {
+        checkUser(userId);
+        return plantTypeRepository.findPlantTypeByCategory(category);
+    }
 
+    public List<PlantType> getPlantTypesBySize(Integer userId, String size) {
+        checkUser(userId);
+        return plantTypeRepository.findPlantTypeBySize(size);
+    }
+
+    public List<PlantType> getPlantTypesByGrowthSpeed(Integer userId, String growthSpeed) {
+        checkUser(userId);
+        return plantTypeRepository.findPlantTypeByGrowthSpeed(growthSpeed);
+    }
+
+    public List<PlantType> getPlantTypesByWaterNeeds(Integer userId, String waterNeeds) {
+        checkUser(userId);
+        return plantTypeRepository.findPlantTypeByWaterNeeds(waterNeeds);
+    }
+
+    public List<PlantType> getPlantTypesBySunNeeds(Integer userId, String sunNeeds) {
+        checkUser(userId);
+        return plantTypeRepository.findPlantTypeBySunNeeds(sunNeeds);
+    }
+
+    public List<PlantType> getPlantTypesBySeason(Integer userId, String season) {
+        checkUser(userId);
+        return plantTypeRepository.findPlantTypeBySeason(season);
+    }
+
+    public List<PlantType> getPlantTypesByDifficultyLevel(Integer userId, String difficultyLevel) {
+        checkUser(userId);
+        return plantTypeRepository.findPlantTypeByDifficultyLevel(difficultyLevel);
+    }
+
+    public List<PlantType> getPlantTypesByGrowingMedium(Integer userId, String growingMedium) {
+        checkUser(userId);
+        return plantTypeRepository.findPlantTypeByGrowingMedium(growingMedium);
+    }
+
+    public List<PlantType> getPlantTypesByPlantingPlace(Integer userId, String plantingPlace) {
+        checkUser(userId);
+        return plantTypeRepository.findPlantTypeByPlantingPlace(plantingPlace);
+    }
+
+    private void checkUser(Integer userId) {
+        User user = userRepository.findUserById(userId);
+        if (user == null) {
+            throw new ApiException("User not found");
+        }
+    }
+
+    public List<PlantType> getPlantTypesByLifeSpan(Integer userId, String lifeSpan) {
+        checkUser(userId);
+        return plantTypeRepository.findPlantTypeByLifeSpan(lifeSpan);
+    }
 
 }
