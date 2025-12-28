@@ -50,4 +50,8 @@ public class Farm {
     @JsonIgnore
     private Set<Product> products;
 
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "farm")
+    @JsonIgnore
+    private Set<Review> reviews;
+
 }
