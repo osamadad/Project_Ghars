@@ -3,14 +3,8 @@ package com.tuwaiq.project_ghars.Service;
 import com.tuwaiq.project_ghars.Api.ApiException;
 import com.tuwaiq.project_ghars.Config.Configuration;
 import com.tuwaiq.project_ghars.DTOIn.FarmerDTOIn;
-import com.tuwaiq.project_ghars.Model.Farmer;
-import com.tuwaiq.project_ghars.Model.FarmerAchievement;
-import com.tuwaiq.project_ghars.Model.Level;
-import com.tuwaiq.project_ghars.Model.User;
-import com.tuwaiq.project_ghars.Repository.FarmerAchievementRepository;
-import com.tuwaiq.project_ghars.Repository.FarmerRepository;
-import com.tuwaiq.project_ghars.Repository.LevelRepository;
-import com.tuwaiq.project_ghars.Repository.UserRepository;
+import com.tuwaiq.project_ghars.Model.*;
+import com.tuwaiq.project_ghars.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +20,7 @@ public class FarmerService {
     private final Configuration configuration;
     private final LevelRepository levelRepository;
     private final FarmerAchievementRepository farmerAchievementRepository;
+    private final WhatsappService whatsappService;
 
     public void registerFarmer(FarmerDTOIn farmerDTOIn) {
 
@@ -199,5 +194,47 @@ public class FarmerService {
 
     public List<Farmer> getFarmersWhoPlantedPlant(String plantName) {
         return farmerRepository.getFarmerWhoPlantedThisPlant(plantName);
+    }
+
+    public List<Farmer> getFarmerWithTheMostYield() {
+        return farmerRepository.findFarmerWithTheMostYield();
+    }
+
+    public void talkWithFarmers(Integer userId, Integer farmerId, String message){
+        Farmer farmer=farmerRepository.findFarmerById(userId);
+        if (farmer==null){
+            throw new ApiException("You are not a farmer");
+        }
+        Farmer receverFarmer=farmerRepository.findFarmerById(farmerId);
+        if (receverFarmer==null){
+            throw new ApiException("Farmer not found");
+        }
+
+        whatsappService.sendWhatsAppMessage(receverFarmer.getUser().getPhoneNumber(),message);
+    }
+
+    public void talkWithFarmersWhoPlantedAPlant(Integer userId, Integer farmerId, String plantName){
+        Farmer farmer=farmerRepository.findFarmerById(userId);
+        if (farmer==null){
+            throw new ApiException("You are not a farmer");
+        }
+        Farmer receverFarmer=farmerRepository.findFarmerById(farmerId);
+        if (receverFarmer==null){
+            throw new ApiException("Farmer not found");
+        }
+        List<Farmer> farmers=farmerRepository.getFarmerWhoPlantedThisPlant(plantName);
+
+        String prompt = """
+                مرحبًا! 👋
+                لاحظت أنك زرعت %s من قبل. أنا أخطط لزراعته بنفسي،
+                ويسعدني أن أسمع عن تجربتك.
+
+                كيف كانت تجربتك معه؟
+                هل لديك نصائح أو أشياء تتمنى لو كنت تعرفها في وقتٍ أبكر؟
+
+                شكرًا مقدمًا!
+                """.formatted(plantName);
+
+        whatsappService.sendWhatsAppMessage(farmers.getFirst().getUser().getPhoneNumber(),prompt);
     }
 }

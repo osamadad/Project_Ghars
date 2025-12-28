@@ -57,7 +57,7 @@ public class FarmerController {
 
     @GetMapping("/by-level/{minLevel}/{maxLevel}")
     public ResponseEntity<?> getFarmersByMinAndMaxLevel(@AuthenticationPrincipal User user, @PathVariable Integer minLevel, @PathVariable Integer maxLevel) {
-        return ResponseEntity.status(200).body(farmerService.getFarmersByLevel(minLevel,maxLevel));
+        return ResponseEntity.status(200).body(farmerService.getFarmersByLevel(minLevel, maxLevel));
     }
 
     @GetMapping("/most-level")
@@ -68,5 +68,22 @@ public class FarmerController {
     @GetMapping("/planted/{plantName}")
     public ResponseEntity<?> getFarmersWhoPlantedPlant(@AuthenticationPrincipal User user, @PathVariable String plantName) {
         return ResponseEntity.status(200).body(farmerService.getFarmersWhoPlantedPlant(plantName));
+    }
+
+    @GetMapping("/most-yield")
+    public ResponseEntity<?> getFarmerWithTheMostYield(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(farmerService.getFarmerWithTheMostYield());
+    }
+
+    @PostMapping("/talk/{farmerId}/{message}")
+    public ResponseEntity<?> talkWithFarmer(@AuthenticationPrincipal User user, @PathVariable Integer farmerId, @PathVariable String message) {
+        farmerService.talkWithFarmers(user.getId(), farmerId, message);
+        return ResponseEntity.status(200).body(new ApiResponse("Message sent successfully"));
+    }
+
+    @PostMapping("/talk-about-plant/{farmerId}/{plantName}")
+    public ResponseEntity<?> talkWithFarmersWhoPlantedAPlant(@AuthenticationPrincipal User user, @PathVariable Integer farmerId, @PathVariable String plantName) {
+        farmerService.talkWithFarmersWhoPlantedAPlant(user.getId(), farmerId, plantName);
+        return ResponseEntity.status(200).body(new ApiResponse("Message sent successfully"));
     }
 }
