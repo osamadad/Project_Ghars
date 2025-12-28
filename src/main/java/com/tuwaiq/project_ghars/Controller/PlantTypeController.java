@@ -21,8 +21,6 @@ import java.io.IOException;
 public class PlantTypeController {
 
     private final PlantTypeService plantTypeService;
-    private final PlantNetService plantNetService;
-    private final AIService aiService;
 
     @PostMapping("/add")
     public ResponseEntity<?> addPlantType(@AuthenticationPrincipal User user, @RequestBody @Valid PlantType plantType) {
@@ -45,27 +43,5 @@ public class PlantTypeController {
     public ResponseEntity<?> deletePlantType(@AuthenticationPrincipal User user, @PathVariable Integer plantTypeId) {
         plantTypeService.deletePlantType(user.getId(), plantTypeId);
         return ResponseEntity.status(200).body(new ApiResponse("Plant type deleted successfully"));
-    }
-
-    @PostMapping("/identify/{organ}")
-    public ResponseEntity<?> identifyPlant(@RequestBody MultipartFile image, @PathVariable String organ) throws IOException {
-        String result = plantNetService.identifyPlant(image, organ);
-        return ResponseEntity.status(200).body(result);
-    }
-
-    @PostMapping("/identify-diseases/{organ}")
-    public ResponseEntity<?> identifyPlantDiseases(@RequestBody MultipartFile image, @PathVariable String organ) throws IOException {
-        String result = plantNetService.identifyPlantDiseases(image, organ);
-        return ResponseEntity.status(200).body(result);
-    }
-
-    @GetMapping("/learn/green-house")
-    public ResponseEntity<?> LearnGreenHouseAI() {
-        return ResponseEntity.status(200).body(aiService.greenHouseLearningAI());
-    }
-
-    @GetMapping("/learn/water-planting")
-    public ResponseEntity<?> LearnWaterPlantingAI() {
-        return ResponseEntity.status(200).body(aiService.waterPlantingLearningAI());
     }
 }
