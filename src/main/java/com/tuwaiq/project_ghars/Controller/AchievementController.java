@@ -4,6 +4,7 @@ import com.tuwaiq.project_ghars.Api.ApiResponse;
 import com.tuwaiq.project_ghars.Model.Achievement;
 import com.tuwaiq.project_ghars.Model.User;
 import com.tuwaiq.project_ghars.Service.AchievementService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,31 +18,32 @@ public class AchievementController {
     private final AchievementService achievementService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addAchievement(@AuthenticationPrincipal User user, @RequestBody Achievement achievement) {
+    public ResponseEntity<?> addAchievement(@AuthenticationPrincipal User user,
+                                            @RequestBody @Valid Achievement achievement) {
+
         achievementService.addAchievement(user.getId(), achievement);
-        return ResponseEntity.status(200).body(new ApiResponse("Achievement added"));
+        return ResponseEntity.status(200).body(new ApiResponse("Achievement added successfully"));
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getMyAchievements(@AuthenticationPrincipal User user) {
-        return ResponseEntity.status(200)
-                .body(achievementService.getMyAchievements(user.getId()));
-    }
-
-    @GetMapping("/get/{achievementId}")
-    public ResponseEntity<?> getMyAchievementById(@AuthenticationPrincipal User user, @PathVariable Integer achievementId) {
-        return ResponseEntity.status(200).body(achievementService.getMyAchievementById(user.getId(), achievementId));
+    public ResponseEntity<?> getAllAchievements() {
+        return ResponseEntity.status(200).body(achievementService.getAllAchievements());
     }
 
     @PutMapping("/update/{achievementId}")
-    public ResponseEntity<?> updateAchievement(@AuthenticationPrincipal User user, @PathVariable Integer achievementId, @RequestBody Achievement achievement) {
+    public ResponseEntity<?> updateAchievement(@AuthenticationPrincipal User user,
+                                               @PathVariable Integer achievementId,
+                                               @RequestBody @Valid Achievement achievement) {
+
         achievementService.updateAchievement(user.getId(), achievementId, achievement);
-        return ResponseEntity.status(200).body(new ApiResponse("Achievement updated"));
+        return ResponseEntity.status(200).body(new ApiResponse("Achievement updated successfully"));
     }
 
     @DeleteMapping("/delete/{achievementId}")
-    public ResponseEntity<?> deleteAchievement(@AuthenticationPrincipal User user, @PathVariable Integer achievementId) {
+    public ResponseEntity<?> deleteAchievement(@AuthenticationPrincipal User user,
+                                               @PathVariable Integer achievementId) {
+
         achievementService.deleteAchievement(user.getId(), achievementId);
-        return ResponseEntity.status(200).body(new ApiResponse("Achievement deleted"));
+        return ResponseEntity.status(200).body(new ApiResponse("Achievement deleted successfully"));
     }
 }

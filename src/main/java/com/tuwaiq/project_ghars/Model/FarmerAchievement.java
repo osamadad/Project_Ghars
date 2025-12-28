@@ -1,28 +1,32 @@
 package com.tuwaiq.project_ghars.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Achievement {
+public class FarmerAchievement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty
-    @Column(columnDefinition = "varchar(100) not null")
-    private String title;
+    @Column()
+    private LocalDateTime unlockedAt;
 
-    @NotEmpty
-    @Column(columnDefinition = "varchar(255) not null")
-    private String task;
+    @ManyToOne
+    private Achievement achievement;
+
+    @ManyToOne
+    @JsonIgnore
+    private Farmer farmer;
 }

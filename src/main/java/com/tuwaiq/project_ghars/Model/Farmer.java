@@ -2,7 +2,7 @@ package com.tuwaiq.project_ghars.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,29 +18,39 @@ import java.util.Set;
 public class Farmer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty
-    @Column(columnDefinition = "varchar(50) not null")
-    private String experience;
+    @Column(columnDefinition = "varchar(50)")
+    private String farmerRank;
 
-    @NotEmpty
-    @Column(columnDefinition = "varchar(20) not null")
-    private String level;
+    @NotNull
+    @Column(columnDefinition = "int not null")
+    private Integer farmerExperience;
+
+    @NotNull
+    @Column(columnDefinition = "int not null")
+    private Integer totalYield;
+
+    @NotNull
+    @Column(columnDefinition = "int not null")
+    private Integer seasonalYield;
+
+    @ManyToOne
+    private Level level;
+
+    @ManyToOne
+    private FarmerAchievement farmerAchievement;
 
     @OneToOne
     @MapsId
     @JsonIgnore
     private User user;
 
-
     @OneToMany(mappedBy = "farmer", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Farm> farms;
 
     @OneToMany(mappedBy = "farmer", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<VirtualFarm> virtualFarms;
-
-    @OneToMany(mappedBy = "farmer", cascade = CascadeType.ALL)
-    private Set<Achievement> achievements;
 }
