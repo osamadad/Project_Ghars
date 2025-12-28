@@ -17,31 +17,31 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping("/get-all/{userId}")
-    public ResponseEntity<?> getAllProducts(@PathVariable Integer userId) {
-        return ResponseEntity.status(200).body(productService.getAllProducts(userId));
+    @GetMapping("/get-all")
+    public ResponseEntity<?> getAllProducts(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(productService.getAllProducts(user.getId()));
     }
 
-    @GetMapping("/my-products/{userId}")
-    public ResponseEntity<?> getMyProducts(@PathVariable Integer userId) {
-        return ResponseEntity.status(200).body(productService.getMyProducts(userId));
+    @GetMapping("/my-products")
+    public ResponseEntity<?> getMyProducts(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(productService.getMyProducts(user.getId()));
     }
 
-    @PostMapping("/add/{userId}")
-    public ResponseEntity<?> addProduct(@PathVariable Integer userId, @Valid @RequestBody Product product) {
-        productService.addProduct(userId, product);
+    @PostMapping("/add")
+    public ResponseEntity<?> addProduct(@AuthenticationPrincipal User user, @Valid @RequestBody Product product) {
+        productService.addProduct(user.getId(), product);
         return ResponseEntity.status(200).body(new ApiResponse("Product added successfully"));
     }
 
-    @PutMapping("/update/{userId}/{productId}")
-    public ResponseEntity<?> updateProduct(@PathVariable Integer userId, @PathVariable Integer productId, @Valid @RequestBody Product product) {
-        productService.updateProduct(userId, productId, product);
+    @PutMapping("/update/{productId}")
+    public ResponseEntity<?> updateProduct(@AuthenticationPrincipal User user, @PathVariable Integer productId, @Valid @RequestBody Product product) {
+        productService.updateProduct(user.getId(), productId, product);
         return ResponseEntity.status(200).body(new ApiResponse("Product updated successfully"));
     }
 
-    @DeleteMapping("/delete/{userId}/{productId}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Integer userId, @PathVariable Integer productId) {
-        productService.deleteProduct(userId, productId);
+    @DeleteMapping("/delete/{productId}")
+    public ResponseEntity<?> deleteProduct(@AuthenticationPrincipal User user, @PathVariable Integer productId) {
+        productService.deleteProduct(user.getId(), productId);
         return ResponseEntity.status(200).body(new ApiResponse("Product deleted successfully"));
     }
 
