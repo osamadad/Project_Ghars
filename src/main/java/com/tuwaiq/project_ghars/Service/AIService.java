@@ -3,11 +3,15 @@ package com.tuwaiq.project_ghars.Service;
 import com.tuwaiq.project_ghars.Api.ApiException;
 import com.tuwaiq.project_ghars.DTOout.GreenHouseLearningDTOOut;
 import com.tuwaiq.project_ghars.DTOout.RecommendedEventDTOOut;
+import com.tuwaiq.project_ghars.DTOout.SeasonPlantDTOOut;
 import com.tuwaiq.project_ghars.DTOout.WaterPlantingLearningDTOOut;
 import com.tuwaiq.project_ghars.Model.Event;
 import com.tuwaiq.project_ghars.Model.Farmer;
+import com.tuwaiq.project_ghars.Model.PlantType;
+import com.tuwaiq.project_ghars.Model.User;
 import com.tuwaiq.project_ghars.Repository.EventRepository;
 import com.tuwaiq.project_ghars.Repository.FarmerRepository;
+import com.tuwaiq.project_ghars.Repository.PlantTypeRepository;
 import com.tuwaiq.project_ghars.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +33,7 @@ public class AIService {
     private final UserRepository userRepository ;
     private final FarmerRepository farmerRepository ;
     private final ObjectMapper objectMapper;
+    private final PlantTypeRepository plantTypeRepository;
     @Value("${openai.api-key}")
     private String openAiApiKey;
 
@@ -267,4 +272,143 @@ public class AIService {
         }
         return sb.toString();
     }
+
+
+
+    public List<SeasonPlantDTOOut> getSeasonPlants(String season) {
+
+        if (season == null || season.isBlank()) {
+            throw new ApiException("Season is required");
+        }
+
+        List<PlantType> plants = plantTypeRepository.findPlantTypeBySeasonIgnoreCase(season);
+
+        if (plants.isEmpty()) {
+            throw new ApiException("No plants found for this season");
+        }
+        StringBuilder plantsInfo = new StringBuilder();
+        for (PlantType plant : plants) {
+            plantsInfo.append("- ")
+                    .append(plant.getCommonName())
+                    .append(" (")
+                    .append(plant.getCategory())
+                    .append(", difficulty: ")
+                    .append(plant.getDifficultyLevel())
+                    .append(")\n");
+        }
+
+        String prompt = """
+        أنت خبير زراعي.
+        هذه قائمة نباتات مناسبة لموسم %s:
+        %s
+
+        المطلوب:
+        - اختر أفضل النباتات للمزارع
+        - اكتب سبب قصير لكل نبات (سطر واحد)
+        - لا تذكر خطوات زراعة
+        - رجع النتيجة بصيغة:
+        PlantName: reason
+        """.formatted(season, plantsInfo);
+
+        String aiResponse = askAI(prompt);
+
+        return plants.stream()
+                .map(plant -> new SeasonPlantDTOOut(
+                        plant.getCommonName(),
+                        plant.getCategory(),
+                        plant.getDifficultyLevel(),
+                        aiResponse
+                ))
+                .toList();
+    }
+
+
+    public String smartIrrigationSchedule(String plant, String season, String location) {
+
+        if (plant == null || plant.isBlank())
+            throw new ApiException("Plant is required");
+
+        if (season == null || season.isBlank())
+            throw new ApiException("Season is required");
+
+        String prompt = """
+        أنت خبير زراعي ذكي.
+        
+        أعطني جدول ري ذكي للنبات التالي:
+        - النبات: %s
+        - الموسم: %s
+        - الموقع: %s
+        
+        المطلوب:
+        - عدد مرات الري بالأسبوع
+        - أفضل وقت للري
+        - نصيحة مهمة (تحذير أو ملاحظة)
+        - اكتب بالعربي
+        - بدون خطوات طويلة
+        - بدون كلام عام
+        
+        رجّع النتيجة كنص واضح وجاهز للعرض.
+        """.formatted(
+                plant,
+                season,
+                (location == null ? "غير محدد" : location)
+        );
+        return askAI(prompt);
+    }
+
+
+    public String recommendBestPlantForMe(Integer userId) {
+
+        User user = userRepository.findUserById(userId);
+        if (user == null || user.getFarmer() == null) {
+            throw new ApiException("User is not a farmer");
+        }
+
+        Farmer farmer = user.getFarmer();
+
+        String prompt = """
+        أنت خبير زراعي.
+        
+        أعطني اقتراح نبات مناسب لهذا المزارع:
+        - مستوى الخبرة: %s
+        - الخبرة العملية: %s
+        
+        المطلوب:
+        - اسم النبات
+        - سبب مختصر
+        - ليش مناسب لمستواه
+        - بدون خطوات زراعة
+        - بالعربي
+        - سطرين فقط
+        """.formatted(
+                farmer.getLevel(),
+                farmer.getExperience()
+        );
+
+        return askAI(prompt);
+    }
+
+    public String filterPlantsByLocation(String city) {
+
+        String prompt = """
+        أنت خبير زراعي.
+        المدينة: %s
+
+        المطلوب:
+        - اقترح نباتات مناسبة للزراعة في هذه المدينة
+        - صنّف كل نبات حسب الصعوبة: (سهل / صعب)
+        - لا تذكر خطوات زراعة
+        - لا تذكر طقس رقمي
+        - رجّع النتيجة بهذا الشكل فقط:
+
+        🌱 النبات:
+        - الاسم: ...
+        - المستوى: سهل / صعب
+        - السبب: سطر واحد
+
+        """.formatted(city);
+
+        return askAI(prompt);
+    }
+
 }

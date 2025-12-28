@@ -20,7 +20,6 @@ public class OrderController {
         return ResponseEntity.status(200).body(orderService.getAllOrders(userId));
     }
 
-    // CUSTOMER
     @GetMapping("/my-orders/{userId}")
     public ResponseEntity<?> getMyOrders(@PathVariable Integer userId) {
         return ResponseEntity.status(200).body(orderService.getMyOrders(userId));

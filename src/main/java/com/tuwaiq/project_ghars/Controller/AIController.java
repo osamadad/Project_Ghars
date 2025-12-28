@@ -1,7 +1,9 @@
 package com.tuwaiq.project_ghars.Controller;
 
+import com.tuwaiq.project_ghars.DTOIn.SmartIrrigationDTOIn;
 import com.tuwaiq.project_ghars.Model.User;
 import com.tuwaiq.project_ghars.Service.AIService;
+import jakarta.validation.Valid;
 import com.tuwaiq.project_ghars.Service.PlantNetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +50,25 @@ public class AIController {
     public ResponseEntity<?> recommendEvent(@AuthenticationPrincipal User user) {
         return ResponseEntity.status(200).body(aiService.recommendBestEvent(user.getId()));
     }
+    @GetMapping("/ai/season-plants/{season}")
+    public ResponseEntity<?> getSeasonPlants(@PathVariable String season, @AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(aiService.getSeasonPlants(season));
+    }
+    @PostMapping("/ai/smart-irrigation")
+    public ResponseEntity<?> smartIrrigation(@RequestBody @Valid SmartIrrigationDTOIn dto) {
+        return ResponseEntity.status(200).body(aiService.smartIrrigationSchedule(dto.getPlant(), dto.getSeason(), dto.getLocation()));
+    }
+
+    @GetMapping("/ai/recommend-plant")
+    public ResponseEntity<?> recommendBestPlant(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(aiService.recommendBestPlantForMe(user.getId()));
+    }
+    @GetMapping("/ai/filter-plants-by-location/{city}")
+    public ResponseEntity<?> filterPlantsByLocation(@PathVariable String city) {
+        return ResponseEntity.status(200).body(aiService.filterPlantsByLocation(city));
+    }
+
+
 
     @PostMapping("/identify/{organ}")
     public ResponseEntity<?> identifyPlant(@RequestBody MultipartFile image, @PathVariable String organ) throws IOException {
