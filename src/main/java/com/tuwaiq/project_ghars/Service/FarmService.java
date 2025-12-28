@@ -51,12 +51,12 @@ public class FarmService {
         return farmRepository.findAll();
     }
 
-    public List<Farm> getMyFarm(Integer userId, Integer farmId) {
+    public List<Farm> getMyFarm(Integer userId) {
         Farmer farmer=farmerRepository.findFarmerById(userId);
         if (farmer==null){
             throw new ApiException("Farmer not found");
         }
-        List<Farm> farm = farmRepository.findFarmByIdAndFarmer_Id(farmId,farmer.getId());
+        List<Farm> farm = farmRepository.findFarmByFarmer_Id(farmer.getId());
         if (farm == null) {
             throw new ApiException("Farm not found");
         }
