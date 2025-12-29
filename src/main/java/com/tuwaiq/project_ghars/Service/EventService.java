@@ -27,7 +27,7 @@ public class EventService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("ADMIN"))
+       if (!user.getRole().equals("ADMIN"))
             throw new ApiException("Only admin can add events");
 
         if (dto.getEndTime().isBefore(dto.getStartTime()))

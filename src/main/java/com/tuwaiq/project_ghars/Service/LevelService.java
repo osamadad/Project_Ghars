@@ -22,9 +22,9 @@ public class LevelService {
         if (user == null) {
             throw new ApiException("User not found");
         }
-        if (!user.getRole().equals("ADMIN")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("ADMIN")) {
+//            throw new ApiException("Access denied");
+//        }
         if (levelRepository.findLevelByLevelNumber(level.getLevelNumber()) != null) {
             throw new ApiException("Level number already exists");
         }
