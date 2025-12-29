@@ -84,7 +84,7 @@ public class PlantType {
     @Column()
     private String commonRisks;
     @NotEmpty(message = "Sorry, the plant type can't be empty, please try again")
-    @Pattern(regexp = "Seed | Seedling | Grown", message = "Sorry, the farm size must be Seed, Seedling, or Grown, please try again")
+    @Pattern(regexp = "Seed|Seedling|Grown", message = "Sorry, the farm size must be Seed, Seedling, or Grown, please try again")
     @Column()
     private String type;
     @NotEmpty(message = "Sorry, the plant unit can't be empty, please try again")
