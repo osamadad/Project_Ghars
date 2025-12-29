@@ -4,7 +4,12 @@ import com.tuwaiq.project_ghars.Api.ApiException;
 import com.tuwaiq.project_ghars.Model.*;
 import com.tuwaiq.project_ghars.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -17,6 +22,7 @@ public class VirtualPlotService {
     private final FarmerRepository farmerRepository;
     private final UserRepository userRepository;
     private final PlantTypeRepository plantTypeRepository;
+    private final LevelRepository levelRepository;
     private final AIService aiService;
 
     public void addVirtualPlot(Integer userId, Integer virtualFarmId, String plotType) {
@@ -165,6 +171,22 @@ public class VirtualPlotService {
 
         virtualPlot.setPlantType(plantType);
 
+        String urlWebhook="https://ososdad.app.n8n.cloud/webhook-test/4bf991e7-e740-4da3-9ded-30c0e32ca68b";
+        RestTemplate restTemplate = null;
+        
+        String url = UriComponentsBuilder
+                .fromUriString(urlWebhook)
+                .queryParam("id", plantId)
+                .build()
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+        restTemplate.postForEntity(url, requestEntity, String.class);
+
         virtualPlotRepository.save(virtualPlot);
 
     }
@@ -199,5 +221,148 @@ public class VirtualPlotService {
         virtualPlot.setPlantType(null);
 
         virtualPlotRepository.save(virtualPlot);
+    }
+
+    public void addWater(Integer plotId){
+        VirtualPlot virtualPlot=virtualPlotRepository.findVirtualPlotById(plotId);
+        if (virtualPlot==null){
+            throw new ApiException("Plot not found");
+        }
+        if (virtualPlot.getPlantType()==null){
+            throw new ApiException("There is no plant in this plot");
+        }
+        virtualPlot.setWaterMeter(virtualPlot.getWaterMeter()+15);
+
+        virtualPlotRepository.save(virtualPlot);
+    }
+
+    public void addSun(Integer plotId){
+        VirtualPlot virtualPlot=virtualPlotRepository.findVirtualPlotById(plotId);
+        if (virtualPlot==null){
+            throw new ApiException("Plot not found");
+        }
+        if (virtualPlot.getPlantType()==null){
+            throw new ApiException("There is no plant in this plot");
+        }
+        virtualPlot.setSunMeter(virtualPlot.getSunMeter()+15);
+
+        virtualPlotRepository.save(virtualPlot);
+    }
+
+    public void checkPlant(Integer plotId){
+        VirtualPlot virtualPlot=virtualPlotRepository.findVirtualPlotById(plotId);
+        if (virtualPlot==null){
+            throw new ApiException("Plot not found");
+        }
+        if (virtualPlot.getPlantType()==null){
+            throw new ApiException("There is no plant in this plot");
+        }
+        if (virtualPlot.getStatus().equalsIgnoreCase("dead")){
+            throw new ApiException("The plant is dead");
+        }
+        Integer health=virtualPlot.getHealth();
+        Integer progress=virtualPlot.getProgress();
+        Integer sunMeter= virtualPlot.getSunMeter();
+        Integer waterMeter= virtualPlot.getWaterMeter();
+        String sunNeeds=virtualPlot.getPlantType().getSunNeeds();
+        String waterNeeds=virtualPlot.getPlantType().getWaterNeeds();
+
+        Integer waterThreshold;
+        Integer sunThreshold;
+        if (waterNeeds.equalsIgnoreCase("low")){
+            waterThreshold=70;
+        }
+        else if (waterNeeds.equalsIgnoreCase("medium")){
+            waterThreshold=100;
+        }
+        else {
+            waterThreshold=130;
+        }
+        if (waterMeter>waterThreshold){
+            health-=10;
+        }
+        if (waterMeter<50){
+            health-=10;
+        }
+
+        if (sunNeeds.equalsIgnoreCase("low")){
+            sunThreshold=70;
+        }
+        else if (sunNeeds.equalsIgnoreCase("medium")){
+            sunThreshold=100;
+        }
+        else {
+            sunThreshold=130;
+        }
+        if (sunMeter>sunThreshold){
+            health-=10;
+        }
+        if (sunMeter<50){
+            health-=10;
+        }
+
+        virtualPlot.setHealth(health);
+        if (health<=0){
+            virtualPlot.setStatus("dead");
+        }else {
+            progress+=10;
+            if (progress>=100){
+                virtualPlot.setStatus("ready");
+            }
+            virtualPlot.setProgress(progress);
+        }
+
+        virtualPlotRepository.save(virtualPlot);
+    }
+
+    public void harvestPlant(Integer plotId){
+        VirtualPlot virtualPlot=virtualPlotRepository.findVirtualPlotById(plotId);
+        if (virtualPlot==null){
+            throw new ApiException("Plot not found");
+        }
+        if (virtualPlot.getPlantType()==null){
+            throw new ApiException("There is no plant in this plot");
+        }
+        if (virtualPlot.getStatus().equalsIgnoreCase("dead")){
+            throw new ApiException("The plant is dead");
+        }
+        if (virtualPlot.getStatus().equalsIgnoreCase("ready")){
+            Farmer farmer=farmerRepository.findFarmerById(virtualPlot.getVirtualFarm().getFarmer().getId());
+            if (farmer==null){
+                throw new ApiException("Farmer not found");
+            }
+            Integer finalYield= (int) (virtualPlot.getExpectedYield()+(virtualPlot.getHealth()*0.5));
+            Integer experienceGained= (int) (virtualPlot.getExperienceGiven()+(virtualPlot.getHealth()*0.5));
+            farmer.setTotalYield(farmer.getTotalYield()+finalYield);
+            farmer.setSeasonalYield(farmer.getSeasonalYield()+finalYield);
+            farmer.setFarmerExperience(farmer.getFarmerExperience()+experienceGained);
+            Level level=levelRepository.findLevelById(farmer.getLevel().getId()+1);
+            if (level==null){
+                throw new ApiException("You have reached the max level");
+            }
+            if (farmer.getFarmerExperience()>=level.getRequiredExp()){
+                farmer.setLevel(level);
+            }
+        }
+
+        virtualPlotRepository.save(virtualPlot);
+    }
+
+    public void test(Integer plantId){
+        String urlWebhook="https://ososdad.app.n8n.cloud/webhook-test/4bf991e7-e740-4da3-9ded-30c0e32ca68b";
+        RestTemplate restTemplate = new RestTemplate();
+
+        String url = UriComponentsBuilder
+                .fromUriString(urlWebhook)
+                .queryParam("id", plantId)
+                .build()
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+        restTemplate.postForEntity(url, requestEntity, String.class);
     }
 }
