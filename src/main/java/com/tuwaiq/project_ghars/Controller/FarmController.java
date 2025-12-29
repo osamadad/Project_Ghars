@@ -2,6 +2,8 @@ package com.tuwaiq.project_ghars.Controller;
 
 import com.tuwaiq.project_ghars.Api.ApiResponse;
 import com.tuwaiq.project_ghars.DTOIn.FarmDTOIn;
+import com.tuwaiq.project_ghars.DTOIn.LicenseDTOIn;
+import com.tuwaiq.project_ghars.Model.Farm;
 import com.tuwaiq.project_ghars.Model.User;
 import com.tuwaiq.project_ghars.Service.FarmService;
 import jakarta.validation.Valid;
@@ -45,10 +47,14 @@ public class FarmController {
         return ResponseEntity.status(200).body(new ApiResponse("Farm deleted successfully"));
     }
 
+    @PutMapping("/add-license/{farmId}")
+    public ResponseEntity<?> addLicense(@AuthenticationPrincipal User user, @PathVariable Integer farmId, @RequestBody @Valid LicenseDTOIn licenseDTOIn) {
+        farmService.addLicense(farmId, licenseDTOIn);
+        return ResponseEntity.status(200).body(new ApiResponse("License added successfully and pending approval"));
+    }
 
     @PutMapping("/license/accept/{farmId}")
-    public ResponseEntity<?> acceptLicense(@AuthenticationPrincipal User user,
-                                           @PathVariable Integer farmId) {
+    public ResponseEntity<?> acceptLicense(@AuthenticationPrincipal User user, @PathVariable Integer farmId) {
 
         farmService.acceptLicense(user.getId(), farmId);
         return ResponseEntity.status(200).body(new ApiResponse("Farm license accepted"));

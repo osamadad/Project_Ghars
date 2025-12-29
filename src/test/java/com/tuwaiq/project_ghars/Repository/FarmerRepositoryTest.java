@@ -66,7 +66,7 @@ public class FarmerRepositoryTest {
         farmerRepository.save(farmer3);
         farm1 = new Farm(null, "123456789", "Pending", "happy farm", "happy farm", "Small", "apples", 5.5, "https", LocalDateTime.now(), farmer3, null, null, null);
         farmRepository.save(farm1);
-        plantType1 = new PlantType(null, "Apple", "Malus domestica", "Rosaceae", "fruit", "perennial", "Central Asia", "normal", "2 years", "large", "medium", "high", "soil", "outdoor", "spring", "medium", "pests,disease,temperature_stress", "Grown", "PIECE", null, null);
+        plantType1 = new PlantType(null, "Apple", "Malus domestica", "Rosaceae", "fruit", "perennial", "Central Asia", "normal", "2 years", "large", "medium", "high", "soil", "outdoor", "spring", "medium", "pests,disease,temperature_stress",  null, null);
         plantTypeRepository.save(plantType1);
         field1 = new Field(null, "Harvested", 55.55, LocalDateTime.now(), LocalDateTime.now(), farm1, new HashSet<>(), null);
         field1.getPlantTypes().add(plantType1);

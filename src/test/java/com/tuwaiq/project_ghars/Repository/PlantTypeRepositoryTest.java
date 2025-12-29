@@ -28,11 +28,11 @@ public class PlantTypeRepositoryTest {
     @BeforeEach
     void setUp() {
 
-        plantType1 = new PlantType(null, "Apple", "Malus domestica", "Rosaceae", "fruit", "perennial", "Central Asia", "normal", "2 years", "large", "medium", "high", "soil", "outdoor", "spring", "medium", "pests,disease", "Grown", "PIECE", null, null);
+        plantType1 = new PlantType(null, "Apple", "Malus domestica", "Rosaceae", "fruit", "perennial", "Central Asia", "normal", "2 years", "large", "medium", "high", "soil", "outdoor", "spring", "medium", "pests,disease", null, null);
 
-        plantType2 = new PlantType(null, "Tomato", "Solanum lycopersicum", "Solanaceae", "vegetable", "annual", "South America", "fast", "90 days", "medium", "high", "high", "soil", "outdoor", "summer", "easy", "overwatering,pests", "Seedling", "PACK", null, null);
+        plantType2 = new PlantType(null, "Tomato", "Solanum lycopersicum", "Solanaceae", "vegetable", "annual", "South America", "fast", "90 days", "medium", "high", "high", "soil", "outdoor", "summer", "easy", "overwatering,pests",  null, null);
 
-        plantType3 = new PlantType(null, "Basil", "Ocimum basilicum", "Lamiaceae", "herb", "annual", "Africa", "normal", "60 days", "small", "medium", "medium", "soil", "both", "spring", "easy", "pests", "Seed", "BUNCH", null, null);
+        plantType3 = new PlantType(null, "Basil", "Ocimum basilicum", "Lamiaceae", "herb", "annual", "Africa", "normal", "60 days", "small", "medium", "medium", "soil", "both", "spring", "easy", "pests", null, null);
 
         plantTypeRepository.save(plantType1);
         plantTypeRepository.save(plantType2);

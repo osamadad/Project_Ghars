@@ -111,8 +111,8 @@ public class FarmService {
     }
 
 
-    public void addLicense(Farm farm , LicenseDTOIn licenseDTOIn){
-        Farm LFarm = farmRepository.findFarmById(farm.getId());
+    public void addLicense(Integer farmId , LicenseDTOIn licenseDTOIn){
+        Farm LFarm = farmRepository.findFarmById(farmId);
 
         if(LFarm==null) throw new ApiException("Farm not found");
 
