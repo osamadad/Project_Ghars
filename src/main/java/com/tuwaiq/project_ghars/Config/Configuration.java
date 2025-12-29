@@ -70,7 +70,6 @@ public class Configuration {
                                 "/api/v1/farmer-achievement/my"
                         ).hasAuthority("FARMER")
 
-                        // DRIVER (اختياري إذا عندك Role اسمها DRIVER)
                         .requestMatchers(
                                 "/api/v1/driver/register",
                                 "/api/v1/driver/get",
