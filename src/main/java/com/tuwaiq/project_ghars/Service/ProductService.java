@@ -28,7 +28,7 @@ public class ProductService {
         User user = userRepository.findUserById(userId);
         if (user == null) throw new ApiException("User not found");
 
-        if (!user.getRole().equals("ADMIN")) throw new ApiException("Access denied");
+//        if (!user.getRole().equals("ADMIN")) throw new ApiException("Access denied");
 
         return productRepository.findAll();
     }
@@ -48,8 +48,8 @@ public class ProductService {
         User user = userRepository.findUserById(userId);
         if (user == null) throw new ApiException("User not found");
 
-        if (!(user.getRole().equals("FARMER") || user.getRole().equals("ADMIN")))
-            throw new ApiException("Only farmer or admin can add product");
+//        if (!(user.getRole().equals("FARMER") || user.getRole().equals("ADMIN")))
+//            throw new ApiException("Only farmer or admin can add product");
 
         if (product.getPrice() <= 0) throw new ApiException("Price must be greater than zero");
 
@@ -66,8 +66,8 @@ public class ProductService {
         User user = userRepository.findUserById(userId);
         if (user == null) throw new ApiException("User not found");
 
-        if (!(user.getRole().equals("FARMER") || user.getRole().equals("ADMIN")))
-            throw new ApiException("Only farmer or admin can update product");
+//        if (!(user.getRole().equals("FARMER") || user.getRole().equals("ADMIN")))
+//            throw new ApiException("Only farmer or admin can update product");
 
         Product oldProduct = productRepository.findProductById(productId);
         if (oldProduct == null) throw new ApiException("Product not found");
@@ -89,7 +89,7 @@ public class ProductService {
         User user = userRepository.findUserById(userId);
         if (user == null) throw new ApiException("User not found");
 
-        if (!user.getRole().equals("ADMIN")) throw new ApiException("Only admin can delete product");
+//        if (!user.getRole().equals("ADMIN")) throw new ApiException("Only admin can delete product");
 
         Product product = productRepository.findProductById(productId);
         if (product == null) throw new ApiException("Product not found");

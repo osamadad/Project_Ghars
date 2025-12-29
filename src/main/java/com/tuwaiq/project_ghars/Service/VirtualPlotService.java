@@ -26,9 +26,9 @@ public class VirtualPlotService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("FARMER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         Farmer farmer = farmerRepository.findFarmerById(userId);
         if (farmer == null) {
@@ -61,9 +61,9 @@ public class VirtualPlotService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("FARMER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         Farmer farmer = farmerRepository.findFarmerById(userId);
         if (farmer == null) {
@@ -89,9 +89,9 @@ public class VirtualPlotService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("FARMER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         VirtualPlot virtualPlot = virtualPlotRepository.findVirtualPlotById(virtualPlotId);
         if (virtualPlot == null) {
@@ -113,9 +113,9 @@ public class VirtualPlotService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("FARMER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         VirtualPlot virtualPlot = virtualPlotRepository.findVirtualPlotById(virtualPlotId);
         if (virtualPlot == null) {

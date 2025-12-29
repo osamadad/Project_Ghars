@@ -63,9 +63,9 @@ public class CustomerService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("CUSTOMER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("CUSTOMER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         Customer customer = customerRepository.findCustomerById(userId);
         if (customer == null) {
@@ -82,9 +82,9 @@ public class CustomerService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("CUSTOMER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("CUSTOMER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         Customer customer = customerRepository.findCustomerById(userId);
         if (customer == null) {
@@ -123,9 +123,9 @@ public class CustomerService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("CUSTOMER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("CUSTOMER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         Customer customer = customerRepository.findCustomerById(userId);
         if (customer == null) {

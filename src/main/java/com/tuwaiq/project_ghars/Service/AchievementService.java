@@ -22,9 +22,9 @@ public class AchievementService {
         if (user == null) {
             throw new ApiException("User not found");
         }
-        if (!user.getRole().equals("ADMIN")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("ADMIN")) {
+//            throw new ApiException("Access denied");
+//        }
         achievementRepository.save(achievement);
     }
 
@@ -37,9 +37,9 @@ public class AchievementService {
         if (user == null) {
             throw new ApiException("User not found");
         }
-        if (!user.getRole().equals("ADMIN")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("ADMIN")) {
+//            throw new ApiException("Access denied");
+//        }
 
         Achievement oldAchievement = achievementRepository.findAchievementById(achievementId);
         if (oldAchievement == null) {
@@ -57,9 +57,9 @@ public class AchievementService {
         if (user == null) {
             throw new ApiException("User not found");
         }
-        if (!user.getRole().equals("ADMIN")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("ADMIN")) {
+//            throw new ApiException("Access denied");
+//        }
 
         Achievement achievement = achievementRepository.findAchievementById(achievementId);
         if (achievement == null) {

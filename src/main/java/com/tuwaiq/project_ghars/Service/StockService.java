@@ -24,8 +24,8 @@ public class StockService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("ADMIN"))
-            throw new ApiException("Access denied");
+//        if (!user.getRole().equals("ADMIN"))
+//            throw new ApiException("Access denied");
 
         return stockRepository.findAll();
     }
@@ -36,8 +36,8 @@ public class StockService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("FARMER"))
-            throw new ApiException("Only farmer can access this");
+//        if (!user.getRole().equals("FARMER"))
+//            throw new ApiException("Only farmer can access this");
 
         return stockRepository.findStockByProduct_Farm_Farmer_Id(
                 user.getFarmer().getId()
@@ -50,8 +50,8 @@ public class StockService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!(user.getRole().equals("FARMER") || user.getRole().equals("ADMIN")))
-            throw new ApiException("Only farmer or admin can add stock");
+//        if (!(user.getRole().equals("FARMER") || user.getRole().equals("ADMIN")))
+//            throw new ApiException("Only farmer or admin can add stock");
 
         if (stock.getProduct() == null)
             throw new ApiException("Stock must be linked to a product");
@@ -70,8 +70,8 @@ public class StockService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!(user.getRole().equals("FARMER") || user.getRole().equals("ADMIN")))
-            throw new ApiException("Only farmer or admin can update stock");
+//        if (!(user.getRole().equals("FARMER") || user.getRole().equals("ADMIN")))
+//            throw new ApiException("Only farmer or admin can update stock");
 
         Stock oldStock = stockRepository.findStockById(stockId);
         if (oldStock == null)
@@ -93,8 +93,8 @@ public class StockService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("ADMIN"))
-            throw new ApiException("Only admin can delete stock");
+//        if (!user.getRole().equals("ADMIN"))
+//            throw new ApiException("Only admin can delete stock");
 
         Stock stock = stockRepository.findStockById(stockId);
         if (stock == null)

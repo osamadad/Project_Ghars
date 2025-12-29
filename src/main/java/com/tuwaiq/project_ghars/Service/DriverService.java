@@ -78,9 +78,9 @@ public class DriverService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("DRIVER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("DRIVER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         Driver driver = driverRepository.findDriverById(userId);
         if (driver == null) {
@@ -119,9 +119,9 @@ public class DriverService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("DRIVER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("DRIVER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         Driver driver = driverRepository.findDriverById(userId);
         if (driver == null) {
