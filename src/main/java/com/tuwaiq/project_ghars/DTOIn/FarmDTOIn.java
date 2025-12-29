@@ -22,7 +22,7 @@ public class FarmDTOIn {
     @NotEmpty(message = "Sorry, the farm description can't be empty, please try again")
     private String description;
     @NotEmpty(message = "Sorry, the farm size can't be empty, please try again")
-    @Pattern(regexp = "Small| Medium | Large", message = "Sorry, the farm size must be Small, Medium, or large, please try again")
+    @Pattern(regexp = "Small|Medium|Large", message = "Sorry, the farm size must be Small, Medium, or large, please try again")
     private String size;
     private String speciality;
     private String photoUrl;

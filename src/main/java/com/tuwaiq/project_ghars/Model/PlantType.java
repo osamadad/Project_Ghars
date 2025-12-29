@@ -83,14 +83,6 @@ public class PlantType {
     @Pattern(regexp = "^(overwatering|pests|disease|temperature_stress)(,(overwatering|pests|disease|temperature_stress))*$", message = "Sorry, the common risks must be one or more of: overwatering, pests, disease, or temperature stress, please try again")
     @Column()
     private String commonRisks;
-    @NotEmpty(message = "Sorry, the plant type can't be empty, please try again")
-    @Pattern(regexp = "Seed|Seedling|Grown", message = "Sorry, the farm size must be Seed, Seedling, or Grown, please try again")
-    @Column()
-    private String type;
-    @NotEmpty(message = "Sorry, the plant unit can't be empty, please try again")
-    @Pattern(regexp = "PIECE|PACK|BUNCH", message = "Sorry, the farm size must be PIECE, PACK, or BUNCH, please try again")
-    @Column()
-    private String unit;
     @ManyToMany(mappedBy = "plantTypes")
     @JsonIgnore
     private Set<Field> fields;

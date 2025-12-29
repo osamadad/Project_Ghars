@@ -130,21 +130,6 @@ public class PlantTypeService {
         }
         oldPlantType.setCommonRisks(plantType.getCommonRisks());
 
-        if (!plantType.getType().matches("Seed|Seedling|Grown")) {
-            throw new ApiException(
-                    "Sorry, the farm size must be Seed, Seedling, or Grown, please try again"
-            );
-        }
-        oldPlantType.setType(plantType.getType());
-
-        if (!plantType.getUnit().matches("PIECE|PACK|BUNCH")) {
-            throw new ApiException(
-                    "Sorry, the farm size must be PIECE, PACK, or BUNCH, please try again"
-            );
-        }
-
-        oldPlantType.setUnit(plantType.getUnit());
-
         plantTypeRepository.save(oldPlantType);
     }
 
