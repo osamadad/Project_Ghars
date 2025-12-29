@@ -25,7 +25,7 @@ public class Field {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Pattern(regexp = " Seedling | Growing | Ready | Harvested") /* reference only */
+    @Pattern(regexp = "Seedling|Growing|Ready|Harvested") /* reference only */
     @Column()
     private String status;
     @Column()

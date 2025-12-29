@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface PlantTypeRepository extends JpaRepository<PlantType,Integer> {
+
     PlantType findPlantTypeById(Integer id);
 
     List<PlantType> findPlantTypeBySeasonIgnoreCase(String season);

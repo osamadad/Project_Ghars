@@ -224,6 +224,10 @@ public class FarmerService {
         }
         List<Farmer> farmers=farmerRepository.getFarmerWhoPlantedThisPlant(plantName);
 
+        if (farmers.isEmpty()){
+            throw new ApiException("No farmer planted this plant");
+        }
+
         String prompt = """
                 مرحبًا! 👋
                 لاحظت أنك زرعت %s من قبل. أنا أخطط لزراعته بنفسي،
@@ -235,6 +239,6 @@ public class FarmerService {
                 شكرًا مقدمًا!
                 """.formatted(plantName);
 
-        whatsappService.sendWhatsAppMessage(farmers.getFirst().getUser().getPhoneNumber(),prompt);
+        whatsappService.sendWhatsAppMessage(farmers.get(0).getUser().getPhoneNumber(),prompt);
     }
 }
