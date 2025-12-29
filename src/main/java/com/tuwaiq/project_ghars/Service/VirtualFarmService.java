@@ -27,9 +27,9 @@ public class VirtualFarmService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("FARMER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         Farmer farmer = farmerRepository.findFarmerById(userId);
         if (farmer == null) {
@@ -50,9 +50,9 @@ public class VirtualFarmService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("FARMER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         Farmer farmer = farmerRepository.findFarmerById(userId);
         if (farmer == null) {
@@ -69,9 +69,9 @@ public class VirtualFarmService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("FARMER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         VirtualFarm virtualFarm = virtualFarmRepository.findVirtualFarmById(virtualFarmId);
         if (virtualFarm == null) {
@@ -92,9 +92,9 @@ public class VirtualFarmService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("FARMER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         VirtualFarm virtualFarm = virtualFarmRepository.findVirtualFarmById(virtualFarmId);
         if (virtualFarm == null) {
@@ -117,9 +117,9 @@ public class VirtualFarmService {
             throw new ApiException("User not found");
         }
 
-        if (!user.getRole().equals("FARMER")) {
-            throw new ApiException("Access denied");
-        }
+//        if (!user.getRole().equals("FARMER")) {
+//            throw new ApiException("Access denied");
+//        }
 
         VirtualFarm virtualFarm = virtualFarmRepository.findVirtualFarmById(virtualFarmId);
         if (virtualFarm == null) {

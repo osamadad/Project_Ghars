@@ -28,8 +28,8 @@ public class InvoiceService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("ADMIN"))
-            throw new ApiException("Access denied");
+//        if (!user.getRole().equals("ADMIN"))
+//            throw new ApiException("Access denied");
 
         return invoiceRepository.findAll()
                 .stream()
@@ -43,8 +43,8 @@ public class InvoiceService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("CUSTOMER"))
-            throw new ApiException("Only customer can access invoices");
+//        if (!user.getRole().equals("CUSTOMER"))
+//            throw new ApiException("Only customer can access invoices");
 
         return invoiceRepository
                 .findInvoiceByOrder_Customer_Id(user.getCustomer().getId())
@@ -59,8 +59,8 @@ public class InvoiceService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("ADMIN"))
-            throw new ApiException("Only admin can create invoice");
+//        if (!user.getRole().equals("ADMIN"))
+//            throw new ApiException("Only admin can create invoice");
 
         Order order = orderRepository.findOrderById(orderId);
         if (order == null)
@@ -76,8 +76,8 @@ public class InvoiceService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("ADMIN"))
-            throw new ApiException("Only admin can update invoice");
+//        if (!user.getRole().equals("ADMIN"))
+//            throw new ApiException("Only admin can update invoice");
 
         Invoice oldInvoice = invoiceRepository.findInvoiceById(invoiceId);
         if (oldInvoice == null)
@@ -97,8 +97,8 @@ public class InvoiceService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("ADMIN"))
-            throw new ApiException("Only admin can delete invoice");
+//        if (!user.getRole().equals("ADMIN"))
+//            throw new ApiException("Only admin can delete invoice");
 
         Invoice invoice = invoiceRepository.findInvoiceById(invoiceId);
         if (invoice == null)

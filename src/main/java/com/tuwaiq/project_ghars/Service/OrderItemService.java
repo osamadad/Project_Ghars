@@ -30,8 +30,8 @@ public class OrderItemService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("ADMIN"))
-            throw new ApiException("Access denied");
+//        if (!user.getRole().equals("ADMIN"))
+//            throw new ApiException("Access denied");
 
         return orderItemRepository.findOrderItemByOrder_Id(orderId);
     }
@@ -42,8 +42,8 @@ public class OrderItemService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("CUSTOMER"))
-            throw new ApiException("Only customer can add order items");
+//        if (!user.getRole().equals("CUSTOMER"))
+//            throw new ApiException("Only customer can add order items");
 
         Order order = orderRepository.findOrderById(orderId);
         if (order == null)
@@ -76,8 +76,8 @@ public class OrderItemService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("CUSTOMER"))
-            throw new ApiException("Only customer can update order items");
+//        if (!user.getRole().equals("CUSTOMER"))
+//            throw new ApiException("Only customer can update order items");
 
         OrderItem oldItem = orderItemRepository.findOrderItemById(orderItemId);
         if (oldItem == null)
@@ -108,8 +108,8 @@ public class OrderItemService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("CUSTOMER"))
-            throw new ApiException("Only customer can delete order items");
+//        if (!user.getRole().equals("CUSTOMER"))
+//            throw new ApiException("Only customer can delete order items");
 
         OrderItem orderItem = orderItemRepository.findOrderItemById(orderItemId);
         if (orderItem == null)

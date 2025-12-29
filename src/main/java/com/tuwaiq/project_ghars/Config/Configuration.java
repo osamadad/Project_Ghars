@@ -91,7 +91,7 @@ public class Configuration {
 
                                 "/api/v1/farm/license/accept/{farmId}",
                                 "/api/v1/farm/license/reject/{farmId}"
-                        ).hasAuthority("ADMIN")
+                        ).permitAll()
 
                         /* ================= FARMER ================= */
 
@@ -176,7 +176,7 @@ public class Configuration {
                                 "/api/v1/ai/ai/filter-plants-by-location/{city}",
                                 "/api/v1/ai/{plantId}",
                                 "/api/v1/ai/add/{plantName}"
-                        ).hasAuthority("FARMER")
+                        ).permitAll()
 
                         .requestMatchers(
                                 "/api/v1/driver/register",
@@ -185,7 +185,7 @@ public class Configuration {
                                 "/api/v1/driver/delete",
                                 "/api/v1/delivery/create/{orderId}/{driverId}",
                                 "/api/v1/delivery/update-status/{deliveryId}"
-                        ).hasAuthority("DRIVER")
+                        ).permitAll()
                         /* ================= CUSTOMER ================= */
 
                         .requestMatchers(
@@ -233,7 +233,7 @@ public class Configuration {
                                 // Event interaction
                                 "/api/v1/event/join/{eventId}",
                                 "/api/v1/event/leave/{eventId}"
-                        ).hasAuthority("CUSTOMER")
+                        ).permitAll()
 
                         /* ================= DRIVER ================= */
 
@@ -244,7 +244,7 @@ public class Configuration {
                                 "/api/v1/delivery/my",
                                 "/api/v1/delivery/create/{orderId}/{driverId}",
                                 "/api/v1/delivery/update-status/{deliveryId}"
-                        ).hasAuthority("DRIVER")
+                        ).permitAll()
 
                         .anyRequest().authenticated()
                 )

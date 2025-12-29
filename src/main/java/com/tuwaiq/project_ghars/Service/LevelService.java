@@ -40,9 +40,10 @@ public class LevelService {
         if (user == null) {
             throw new ApiException("User not found");
         }
-        if (!user.getRole().equals("ADMIN")) {
-            throw new ApiException("Access denied");
-        }
+
+//        if (!user.getRole().equals("ADMIN")) {
+//            throw new ApiException("Access denied");
+//        }
 
         Level oldLevel = levelRepository.findLevelById(levelId);
         if (oldLevel == null) {
@@ -65,9 +66,10 @@ public class LevelService {
         if (user == null) {
             throw new ApiException("User not found");
         }
-        if (!user.getRole().equals("ADMIN")) {
-            throw new ApiException("Access denied");
-        }
+
+//        if (!user.getRole().equals("ADMIN")) {
+//            throw new ApiException("Access denied");
+//        }
 
         Level level = levelRepository.findLevelById(levelId);
         if (level == null) {

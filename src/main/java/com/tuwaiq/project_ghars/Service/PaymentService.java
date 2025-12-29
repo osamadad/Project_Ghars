@@ -34,8 +34,8 @@ public class PaymentService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("CUSTOMER"))
-            throw new ApiException("Only customer can make payment");
+//        if (!user.getRole().equals("CUSTOMER"))
+//            throw new ApiException("Only customer can make payment");
 
         Order order = orderRepository.findOrderById(orderId);
         if (order == null)

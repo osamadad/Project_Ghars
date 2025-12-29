@@ -27,8 +27,8 @@ public class EventService {
         if (user == null)
             throw new ApiException("User not found");
 
-       if (!user.getRole().equals("ADMIN"))
-            throw new ApiException("Only admin can add events");
+//       if (!user.getRole().equals("ADMIN"))
+//            throw new ApiException("Only admin can add events");
 
         if (dto.getEndTime().isBefore(dto.getStartTime()))
             throw new ApiException("End time must be after start time");
@@ -66,9 +66,9 @@ public class EventService {
         User user = userRepository.findUserById(userId);
         if (user == null)
             throw new ApiException("User not found");
-
-        if (!user.getRole().equals("ADMIN"))
-            throw new ApiException("Only admin can update events");
+//
+//        if (!user.getRole().equals("ADMIN"))
+//            throw new ApiException("Only admin can update events");
 
         Event event = eventRepository.findEventById(eventId);
         if (event == null)
@@ -93,8 +93,8 @@ public class EventService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("ADMIN"))
-            throw new ApiException("Only admin can delete events");
+//        if (!user.getRole().equals("ADMIN"))
+//            throw new ApiException("Only admin can delete events");
 
         Event event = eventRepository.findEventById(eventId);
         if (event == null)

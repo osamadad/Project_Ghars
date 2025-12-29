@@ -38,8 +38,8 @@ public class DeliveryService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("FARMER"))
-            throw new ApiException("Only farmer can create delivery");
+//        if (!user.getRole().equals("FARMER"))
+//            throw new ApiException("Only farmer can create delivery");
 
         Order order = orderRepository.findOrderById(orderId);
         if (order == null)
@@ -77,8 +77,8 @@ public class DeliveryService {
         if (user == null)
             throw new ApiException("User not found");
 
-        if (!user.getRole().equals("DRIVER"))
-            throw new ApiException("Only driver can update delivery status");
+//        if (!user.getRole().equals("DRIVER"))
+//            throw new ApiException("Only driver can update delivery status");
 
         Delivery delivery = deliveryRepository.findDeliveryById(deliveryId);
         if (delivery == null)
