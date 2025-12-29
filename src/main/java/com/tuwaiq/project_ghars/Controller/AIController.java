@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/va/ai")
+@RequestMapping("/api/v1/ai")
 @RequiredArgsConstructor
 public class AIController {
 

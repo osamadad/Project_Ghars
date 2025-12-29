@@ -8,6 +8,7 @@ import com.tuwaiq.project_ghars.Model.User;
 import com.tuwaiq.project_ghars.Repository.CustomerRepository;
 import com.tuwaiq.project_ghars.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,9 @@ public class CustomerService {
 
     public void registerCustomer(CustomerDTOIn customerDTOIn) {
 
+
+        String hash = new BCryptPasswordEncoder().encode(customerDTOIn.getPassword());
+
         if (userRepository.findUserByUsername(customerDTOIn.getUsername()) != null) {
             throw new ApiException("Username already exists");
         }
@@ -37,7 +41,7 @@ public class CustomerService {
 
         User user = new User();
         user.setUsername(customerDTOIn.getUsername());
-        user.setPassword(configuration.passwordEncoder().encode(customerDTOIn.getPassword()));
+        user.setPassword(hash);
         user.setName(customerDTOIn.getName());
         user.setEmail(customerDTOIn.getEmail());
         user.setPhoneNumber(customerDTOIn.getPhoneNumber());
