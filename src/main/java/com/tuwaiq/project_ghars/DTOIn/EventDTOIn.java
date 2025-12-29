@@ -2,6 +2,7 @@ package com.tuwaiq.project_ghars.DTOIn;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.time.LocalTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class EventDTOIn {
 
     @NotEmpty
