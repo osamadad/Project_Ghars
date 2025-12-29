@@ -31,11 +31,10 @@ public class Order {
 
     @NotNull(message = "Total price is required")
     @Positive(message = "Total price must be greater than zero")
-    private Integer totalPrice;
+    private Double totalPrice;
 
     @NotNull(message = "Order creation date is required")
     private LocalDateTime createdAt;
-
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItem;
@@ -43,4 +42,9 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private Delivery delivery;
+
 }

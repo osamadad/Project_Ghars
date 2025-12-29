@@ -1,6 +1,5 @@
 package com.tuwaiq.project_ghars.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -20,17 +19,10 @@ public class Achievement {
     private Integer id;
 
     @NotEmpty
-    @Column(columnDefinition = "varchar(50) not null")
+    @Column(columnDefinition = "varchar(100) not null")
     private String title;
 
     @NotEmpty
     @Column(columnDefinition = "varchar(255) not null")
     private String task;
-
-    @Column(columnDefinition = "boolean default false")
-    private Boolean isCompleted = false;
-
-    @ManyToOne
-    @JsonIgnore
-    private Farmer farmer;
 }

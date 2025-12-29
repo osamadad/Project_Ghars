@@ -1,5 +1,6 @@
 package com.tuwaiq.project_ghars.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.Future;
@@ -36,7 +37,9 @@ public class Field {
     @ManyToOne
     private Farm farm;
     @ManyToMany
+    @JsonIgnore
     private Set<PlantType> plantTypes;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "field")
+    @JsonIgnore
     private Set<Yield> yields;
 }

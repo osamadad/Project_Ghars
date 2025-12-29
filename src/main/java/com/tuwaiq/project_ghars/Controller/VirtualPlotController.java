@@ -16,9 +16,9 @@ public class VirtualPlotController {
 
     private final VirtualPlotService virtualPlotService;
 
-    @PostMapping("/add/{virtualFarmId}")
-    public ResponseEntity<?> addVirtualPlot(@AuthenticationPrincipal User user, @PathVariable Integer virtualFarmId, @RequestBody VirtualPlot virtualPlot) {
-        virtualPlotService.addVirtualPlot(user.getId(), virtualFarmId, virtualPlot);
+    @PostMapping("/add/{virtualFarmId}/{plotType}")
+    public ResponseEntity<?> addVirtualPlot(@AuthenticationPrincipal User user, @PathVariable Integer virtualFarmId, @PathVariable String plotType) {
+        virtualPlotService.addVirtualPlot(user.getId(), virtualFarmId, plotType);
         return ResponseEntity.status(200).body(new ApiResponse("Virtual plot added"));
     }
 
@@ -32,15 +32,21 @@ public class VirtualPlotController {
         return ResponseEntity.status(200).body(virtualPlotService.getMyVirtualPlotById(user.getId(), virtualPlotId));
     }
 
-    @PutMapping("/update/{virtualPlotId}")
-    public ResponseEntity<?> updateVirtualPlot(@AuthenticationPrincipal User user, @PathVariable Integer virtualPlotId, @RequestBody VirtualPlot virtualPlot) {
-        virtualPlotService.updateVirtualPlot(user.getId(), virtualPlotId, virtualPlot);
-        return ResponseEntity.status(200).body(new ApiResponse("Virtual plot updated"));
-    }
-
     @DeleteMapping("/delete/{virtualPlotId}")
     public ResponseEntity<?> deleteVirtualPlot(@AuthenticationPrincipal User user, @PathVariable Integer virtualPlotId) {
         virtualPlotService.deleteVirtualPlot(user.getId(), virtualPlotId);
         return ResponseEntity.status(200).body(new ApiResponse("Virtual plot deleted"));
+    }
+
+    @PutMapping("/assign-plant/{plotId}/{plantId}")
+    public ResponseEntity<?> assignPlantToVirtualPlot(@AuthenticationPrincipal User user, @PathVariable Integer plotId, @PathVariable Integer plantId) {
+        virtualPlotService.assignAPlantToVirtualPlot(user.getId(), plotId, plantId);
+        return ResponseEntity.status(200).body(new ApiResponse("Plant assigned to virtual plot successfully"));
+    }
+
+    @PutMapping("/uproot/{plotId}")
+    public ResponseEntity<?> uprootPlantFromVirtualPlot(@AuthenticationPrincipal User user, @PathVariable Integer plotId) {
+        virtualPlotService.upRootPlantInVirtualPlot(user.getId(), plotId);
+        return ResponseEntity.status(200).body(new ApiResponse("Plant uprooted from virtual plot successfully"));
     }
 }

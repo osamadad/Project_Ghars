@@ -3,14 +3,13 @@ package com.tuwaiq.project_ghars.Service;
 import com.tuwaiq.project_ghars.Api.ApiException;
 import com.tuwaiq.project_ghars.Config.Configuration;
 import com.tuwaiq.project_ghars.DTOIn.FarmerDTOIn;
-import com.tuwaiq.project_ghars.Model.Farmer;
-import com.tuwaiq.project_ghars.Model.User;
-import com.tuwaiq.project_ghars.Repository.FarmerRepository;
-import com.tuwaiq.project_ghars.Repository.UserRepository;
+import com.tuwaiq.project_ghars.Model.*;
+import com.tuwaiq.project_ghars.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +17,10 @@ public class FarmerService {
 
     private final FarmerRepository farmerRepository;
     private final UserRepository userRepository;
-    private final Configuration configuration ;
+    private final Configuration configuration;
+    private final LevelRepository levelRepository;
+    private final FarmerAchievementRepository farmerAchievementRepository;
+    private final WhatsappService whatsappService;
 
     public void registerFarmer(FarmerDTOIn farmerDTOIn) {
 
@@ -34,6 +36,17 @@ public class FarmerService {
             throw new ApiException("Phone number already exists");
         }
 
+        Level level = levelRepository.findLevelById(farmerDTOIn.getLevelId());
+        if (level == null) {
+            throw new ApiException("Level not found");
+        }
+
+        FarmerAchievement farmerAchievement =
+                farmerAchievementRepository.findFarmerAchievementById(farmerDTOIn.getFarmerAchievementId());
+        if (farmerAchievement == null) {
+            throw new ApiException("FarmerAchievement not found");
+        }
+
         User user = new User();
         user.setUsername(farmerDTOIn.getUsername());
         user.setPassword(configuration.passwordEncoder().encode(farmerDTOIn.getPassword()));
@@ -47,10 +60,20 @@ public class FarmerService {
 
         Farmer farmer = new Farmer();
         farmer.setUser(user);
-        farmer.setExperience(farmerDTOIn.getExperience());
-        farmer.setLevel(farmerDTOIn.getLevel());
+
+        farmer.setFarmerRank(farmerDTOIn.getFarmerRank());
+        farmer.setFarmerExperience(farmerDTOIn.getFarmerExperience());
+        farmer.setTotalYield(farmerDTOIn.getTotalYield());
+        farmer.setSeasonalYield(farmerDTOIn.getSeasonalYield());
+
+        farmer.setLevel(level);
+        farmer.setFarmerAchievement(farmerAchievement);
 
         farmerRepository.save(farmer);
+    }
+
+    public List<Farmer> getAllFarmer() {
+        return farmerRepository.findAll();
     }
 
     public Farmer getMyFarmer(Integer userId) {
@@ -72,7 +95,7 @@ public class FarmerService {
         return farmer;
     }
 
-    public void updateMyFarmer(Integer userId, FarmerDTOIn farmerDTOin) {
+    public void updateMyFarmer(Integer userId, FarmerDTOIn farmerDTOIn) {
 
         User user = userRepository.findUserById(userId);
         if (user == null) {
@@ -88,29 +111,45 @@ public class FarmerService {
             throw new ApiException("Farmer not found");
         }
 
-        User checkUsername = userRepository.findUserByUsername(farmerDTOin.getUsername());
+        User checkUsername = userRepository.findUserByUsername(farmerDTOIn.getUsername());
         if (checkUsername != null && !checkUsername.getId().equals(userId)) {
             throw new ApiException("Username already exists");
         }
 
-        User checkEmail = userRepository.findUserByEmail(farmerDTOin.getEmail());
+        User checkEmail = userRepository.findUserByEmail(farmerDTOIn.getEmail());
         if (checkEmail != null && !checkEmail.getId().equals(userId)) {
             throw new ApiException("Email already exists");
         }
 
-        User checkPhone = userRepository.findUserByPhoneNumber(farmerDTOin.getPhoneNumber());
+        User checkPhone = userRepository.findUserByPhoneNumber(farmerDTOIn.getPhoneNumber());
         if (checkPhone != null && !checkPhone.getId().equals(userId)) {
             throw new ApiException("Phone number already exists");
         }
 
-        user.setUsername(farmerDTOin.getUsername());
-        user.setPassword(configuration.passwordEncoder().encode(farmerDTOin.getPassword()));
-        user.setName(farmerDTOin.getName());
-        user.setEmail(farmerDTOin.getEmail());
-        user.setPhoneNumber(farmerDTOin.getPhoneNumber());
+        Level level = levelRepository.findLevelById(farmerDTOIn.getLevelId());
+        if (level == null) {
+            throw new ApiException("Level not found");
+        }
 
-        farmer.setExperience(farmerDTOin.getExperience());
-        farmer.setLevel(farmerDTOin.getLevel());
+        FarmerAchievement farmerAchievement =
+                farmerAchievementRepository.findFarmerAchievementById(farmerDTOIn.getFarmerAchievementId());
+        if (farmerAchievement == null) {
+            throw new ApiException("FarmerAchievement not found");
+        }
+
+        user.setUsername(farmerDTOIn.getUsername());
+        user.setPassword(configuration.passwordEncoder().encode(farmerDTOIn.getPassword()));
+        user.setName(farmerDTOIn.getName());
+        user.setEmail(farmerDTOIn.getEmail());
+        user.setPhoneNumber(farmerDTOIn.getPhoneNumber());
+
+        farmer.setFarmerRank(farmerDTOIn.getFarmerRank());
+        farmer.setFarmerExperience(farmerDTOIn.getFarmerExperience());
+        farmer.setTotalYield(farmerDTOIn.getTotalYield());
+        farmer.setSeasonalYield(farmerDTOIn.getSeasonalYield());
+
+        farmer.setLevel(level);
+        farmer.setFarmerAchievement(farmerAchievement);
 
         userRepository.save(user);
         farmerRepository.save(farmer);
@@ -134,5 +173,68 @@ public class FarmerService {
 
         farmerRepository.delete(farmer);
         userRepository.delete(user);
+    }
+
+    public List<Farmer> getFarmersByCity(String city) {
+        return farmerRepository.findFarmerByUser_Address_City(city);
+    }
+
+
+    public List<Farmer> getFarmersByRank(String farmerRank) {
+        return farmerRepository.findFarmerByFarmerRank(farmerRank);
+    }
+
+    public List<Farmer> getFarmersByLevel(Integer minLevel, Integer maxLevel) {
+        return farmerRepository.findFarmerByMinAndMaxLevels(minLevel,maxLevel);
+    }
+
+    public List<Farmer> getMostExperiencedFarmer() {
+        return farmerRepository.findMostExperiencedFarmer();
+    }
+
+    public List<Farmer> getFarmersWhoPlantedPlant(String plantName) {
+        return farmerRepository.getFarmerWhoPlantedThisPlant(plantName);
+    }
+
+    public List<Farmer> getFarmerWithTheMostYield() {
+        return farmerRepository.findFarmerWithTheMostYield();
+    }
+
+    public void talkWithFarmers(Integer userId, Integer farmerId, String message){
+        Farmer farmer=farmerRepository.findFarmerById(userId);
+        if (farmer==null){
+            throw new ApiException("You are not a farmer");
+        }
+        Farmer receverFarmer=farmerRepository.findFarmerById(farmerId);
+        if (receverFarmer==null){
+            throw new ApiException("Farmer not found");
+        }
+
+        whatsappService.sendWhatsAppMessage(receverFarmer.getUser().getPhoneNumber(),message);
+    }
+
+    public void talkWithFarmersWhoPlantedAPlant(Integer userId, Integer farmerId, String plantName){
+        Farmer farmer=farmerRepository.findFarmerById(userId);
+        if (farmer==null){
+            throw new ApiException("You are not a farmer");
+        }
+        Farmer receverFarmer=farmerRepository.findFarmerById(farmerId);
+        if (receverFarmer==null){
+            throw new ApiException("Farmer not found");
+        }
+        List<Farmer> farmers=farmerRepository.getFarmerWhoPlantedThisPlant(plantName);
+
+        String prompt = """
+                مرحبًا! 👋
+                لاحظت أنك زرعت %s من قبل. أنا أخطط لزراعته بنفسي،
+                ويسعدني أن أسمع عن تجربتك.
+
+                كيف كانت تجربتك معه؟
+                هل لديك نصائح أو أشياء تتمنى لو كنت تعرفها في وقتٍ أبكر؟
+
+                شكرًا مقدمًا!
+                """.formatted(plantName);
+
+        whatsappService.sendWhatsAppMessage(farmers.getFirst().getUser().getPhoneNumber(),prompt);
     }
 }

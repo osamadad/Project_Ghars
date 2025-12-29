@@ -21,9 +21,10 @@ public class VirtualFarm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty
-    @Column(columnDefinition = "varchar(50) not null")
-    private String field;
+    @NotEmpty(message = "Sorry, the virtual farm can't be empty, please try again")
+    private String name;
+
+    private Integer maxPlot;
 
     @OneToMany(mappedBy = "virtualFarm", cascade = CascadeType.ALL)
     private Set<VirtualPlot> plots;

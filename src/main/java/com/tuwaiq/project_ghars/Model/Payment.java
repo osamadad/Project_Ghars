@@ -1,5 +1,6 @@
 package com.tuwaiq.project_ghars.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -18,18 +19,25 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty(message = "Payment status is required")
     private String status;
 
-    @NotEmpty(message = "Payment provider is required")
     private String provider;
 
     @NotNull(message = "Payment amount is required")
     @Positive(message = "Payment amount must be greater than zero")
-    private Integer amount;
+    private Double amount;
 
+    private String currency;
+
+    private String description;
+
+    private String callBackUrl;
+
+    @Column(unique = true)
+    private String moyasarPaymentId;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
 }

@@ -18,7 +18,6 @@ import java.util.Set;
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotEmpty
@@ -30,4 +29,7 @@ public class Customer {
     @MapsId
     @JsonIgnore
     private User user;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "customer")
+    private Set<Order> order;
 }

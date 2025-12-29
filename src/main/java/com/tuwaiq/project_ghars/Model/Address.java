@@ -28,6 +28,8 @@ public class Address {
     private String buildingNumber;
     @Column()
     private String postalNumber;
+
+
     @OneToOne
     @MapsId
     @JsonIgnore

@@ -2,25 +2,25 @@ package com.tuwaiq.project_ghars.DTOIn;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class FarmerDTOIn {
 
     @NotEmpty
-    @Size(min = 4, max = 10)
     private String username;
 
     @NotEmpty
-    @Size(min = 6, max = 20)
     private String password;
 
     @NotEmpty
-    @Size(min = 2, max = 20)
     private String name;
 
     @NotEmpty
@@ -31,9 +31,23 @@ public class FarmerDTOIn {
     @Pattern(regexp = "^05\\d{8}$")
     private String phoneNumber;
 
-    @NotEmpty
-    private String experience;
+    private String farmerRank;
 
-    @NotEmpty
-    private String level;
+    @NotNull
+    @PositiveOrZero
+    private Integer farmerExperience;
+
+    @NotNull
+    @PositiveOrZero
+    private Integer totalYield;
+
+    @NotNull
+    @PositiveOrZero
+    private Integer seasonalYield;
+
+    @NotNull
+    private Integer levelId;
+
+    @NotNull
+    private Integer farmerAchievementId;
 }

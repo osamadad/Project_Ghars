@@ -28,9 +28,9 @@ public class FarmController {
         return ResponseEntity.status(200).body(farmService.getAllFarms());
     }
 
-    @GetMapping("/get/{farmId}")
-    public ResponseEntity<?> getFarmById(@AuthenticationPrincipal User user, @PathVariable Integer farmId) {
-        return ResponseEntity.status(200).body(farmService.getMyFarm(user.getId(),farmId));
+    @GetMapping("/get-my-farm")
+    public ResponseEntity<?> getMyFarm(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(farmService.getMyFarm(user.getId()));
     }
 
     @PutMapping("/update/{farmId}")
@@ -44,4 +44,22 @@ public class FarmController {
         farmService.deleteFarm(user.getId(), farmId);
         return ResponseEntity.status(200).body(new ApiResponse("Farm deleted successfully"));
     }
+
+
+    @PutMapping("/license/accept/{farmId}")
+    public ResponseEntity<?> acceptLicense(@AuthenticationPrincipal User user,
+                                           @PathVariable Integer farmId) {
+
+        farmService.acceptLicense(user.getId(), farmId);
+        return ResponseEntity.status(200).body(new ApiResponse("Farm license accepted"));
+    }
+
+    @PutMapping("/license/reject/{farmId}")
+    public ResponseEntity<?> rejectLicense(@AuthenticationPrincipal User user, @PathVariable Integer farmId) {
+
+        farmService.rejectLicense(user.getId(), farmId);
+        return ResponseEntity.status(200).body(new ApiResponse("Farm license rejected"));
+    }
+
+
 }

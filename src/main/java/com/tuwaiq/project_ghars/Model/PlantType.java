@@ -1,5 +1,6 @@
 package com.tuwaiq.project_ghars.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.NotEmpty;
@@ -62,10 +63,6 @@ public class PlantType {
     @Pattern(regexp = "low|medium|high", message = "Sorry, the plant sun needs must be low, medium, or high, please try again")
     @Column()
     private String sunNeeds;
-    @NotEmpty(message = "Sorry, the plant temperature needs can't be empty, please try again")
-    @Pattern(regexp = "cold|medium|hot", message = "Sorry, the plant temperature needs must be cold, medium, or hot, please try again")
-    @Column()
-    private String temperatureNeeds;
     @NotEmpty(message = "Sorry, the growing medium can't be empty, please try again")
     @Pattern(regexp = "soil|water|both", message = "Sorry, the growing medium must be soil, water, or both, please try again")
     @Column()
@@ -94,8 +91,10 @@ public class PlantType {
     @Pattern(regexp = "PIECE|PACK|BUNCH", message = "Sorry, the farm size must be PIECE, PACK, or BUNCH, please try again")
     @Column()
     private String unit;
-    @OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true, mappedBy = "plantType")
+    @ManyToMany(mappedBy = "plantTypes")
+    @JsonIgnore
     private Set<Field> fields;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true, mappedBy = "plantType")
+    @JsonIgnore
     private Set<VirtualPlot> virtualPlots;
 }
