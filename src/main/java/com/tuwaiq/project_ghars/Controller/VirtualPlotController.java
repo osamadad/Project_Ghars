@@ -49,4 +49,34 @@ public class VirtualPlotController {
         virtualPlotService.upRootPlantInVirtualPlot(user.getId(), plotId);
         return ResponseEntity.status(200).body(new ApiResponse("Plant uprooted from virtual plot successfully"));
     }
+
+    @PutMapping("/add-water/{plotId}")
+    public ResponseEntity<?> addWater(@PathVariable Integer plotId) {
+        virtualPlotService.addWater(plotId);
+        return ResponseEntity.status(200).body(new ApiResponse("Water added successfully"));
+    }
+
+    @PutMapping("/add-sun/{plotId}")
+    public ResponseEntity<?> addSun(@PathVariable Integer plotId) {
+        virtualPlotService.addSun(plotId);
+        return ResponseEntity.status(200).body(new ApiResponse("Sunlight added successfully"));
+    }
+
+    @PutMapping("/check-plant/{plotId}")
+    public ResponseEntity<?> checkPlant(@PathVariable Integer plotId) {
+        virtualPlotService.checkPlant(plotId);
+        return ResponseEntity.status(200).body(new ApiResponse("Plant checked successfully"));
+    }
+
+    @PutMapping("/harvest/{plotId}")
+    public ResponseEntity<?> harvestPlant(@PathVariable Integer plotId) {
+        virtualPlotService.harvestPlant(plotId);
+        return ResponseEntity.status(200).body(new ApiResponse("Plant harvested successfully"));
+    }
+
+    @PostMapping("/test/{plantId}")
+    public ResponseEntity<?> test(@PathVariable Integer plantId){
+        virtualPlotService.test(plantId);
+        return ResponseEntity.status(200).body(new ApiResponse("test tested successfully"));
+    }
 }
