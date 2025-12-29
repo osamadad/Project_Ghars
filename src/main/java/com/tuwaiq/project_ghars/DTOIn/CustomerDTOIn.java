@@ -17,7 +17,6 @@ public class CustomerDTOIn {
     private String username;
 
     @NotEmpty
-    @Size(min = 6, max = 20)
     private String password;
 
     @NotEmpty
