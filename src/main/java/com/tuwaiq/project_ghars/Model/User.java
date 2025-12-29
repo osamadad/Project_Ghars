@@ -44,8 +44,6 @@ public class User implements UserDetails {
     @Column(columnDefinition = "varchar(10) not null unique")
     private String username;
 
-    @NotEmpty
-    @Size(min = 6, max = 20)
     @Column(columnDefinition = "varchar(255) not null")
     private String password;
 

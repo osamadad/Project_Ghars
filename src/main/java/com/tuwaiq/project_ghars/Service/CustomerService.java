@@ -23,9 +23,8 @@ public class CustomerService {
     private final Configuration configuration;
 
     public void registerCustomer(CustomerDTOIn customerDTOIn) {
-
-
         String hash = new BCryptPasswordEncoder().encode(customerDTOIn.getPassword());
+
 
         if (userRepository.findUserByUsername(customerDTOIn.getUsername()) != null) {
             throw new ApiException("Username already exists");
