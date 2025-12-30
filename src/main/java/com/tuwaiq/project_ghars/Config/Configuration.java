@@ -177,7 +177,7 @@ public class Configuration {
                                 "/api/v1/ai/{plantId}",
                                 "/api/v1/ai/add/{plantName}"
                         ).permitAll()
-
+//driver
                         .requestMatchers(
                                 "/api/v1/driver/register",
                                 "/api/v1/driver/get",

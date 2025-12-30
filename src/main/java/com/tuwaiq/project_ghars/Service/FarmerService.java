@@ -36,16 +36,6 @@ public class FarmerService {
             throw new ApiException("Phone number already exists");
         }
 
-        Level level = levelRepository.findLevelById(farmerDTOIn.getLevelId());
-        if (level == null) {
-            throw new ApiException("Level not found");
-        }
-
-        FarmerAchievement farmerAchievement =
-                farmerAchievementRepository.findFarmerAchievementById(farmerDTOIn.getFarmerAchievementId());
-        if (farmerAchievement == null) {
-            throw new ApiException("FarmerAchievement not found");
-        }
 
         User user = new User();
         user.setUsername(farmerDTOIn.getUsername());
@@ -63,11 +53,6 @@ public class FarmerService {
 
         farmer.setFarmerRank(farmerDTOIn.getFarmerRank());
         farmer.setFarmerExperience(farmerDTOIn.getFarmerExperience());
-        farmer.setTotalYield(farmerDTOIn.getTotalYield());
-        farmer.setSeasonalYield(farmerDTOIn.getSeasonalYield());
-
-        farmer.setLevel(level);
-        farmer.setFarmerAchievement(farmerAchievement);
 
         farmerRepository.save(farmer);
     }
@@ -126,16 +111,7 @@ public class FarmerService {
             throw new ApiException("Phone number already exists");
         }
 
-        Level level = levelRepository.findLevelById(farmerDTOIn.getLevelId());
-        if (level == null) {
-            throw new ApiException("Level not found");
-        }
 
-        FarmerAchievement farmerAchievement =
-                farmerAchievementRepository.findFarmerAchievementById(farmerDTOIn.getFarmerAchievementId());
-        if (farmerAchievement == null) {
-            throw new ApiException("FarmerAchievement not found");
-        }
 
         user.setUsername(farmerDTOIn.getUsername());
         user.setPassword(configuration.passwordEncoder().encode(farmerDTOIn.getPassword()));
@@ -145,11 +121,6 @@ public class FarmerService {
 
         farmer.setFarmerRank(farmerDTOIn.getFarmerRank());
         farmer.setFarmerExperience(farmerDTOIn.getFarmerExperience());
-        farmer.setTotalYield(farmerDTOIn.getTotalYield());
-        farmer.setSeasonalYield(farmerDTOIn.getSeasonalYield());
-
-        farmer.setLevel(level);
-        farmer.setFarmerAchievement(farmerAchievement);
 
         userRepository.save(user);
         farmerRepository.save(farmer);

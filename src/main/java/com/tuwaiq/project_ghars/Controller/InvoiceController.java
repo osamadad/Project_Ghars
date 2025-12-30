@@ -44,4 +44,8 @@ public class InvoiceController {
         invoiceService.deleteInvoice(user.getId(), invoiceId);
         return ResponseEntity.status(200).body(new ApiResponse("Invoice deleted successfully"));
     }
+    @GetMapping("/platform-profit")
+    public ResponseEntity<?> getPlatformProfit(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(invoiceService.getPlatformTotalProfit(user.getId()));
+    }
 }

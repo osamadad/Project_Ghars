@@ -1,6 +1,7 @@
 package com.tuwaiq.project_ghars.Service;
 
 import com.tuwaiq.project_ghars.Api.ApiException;
+import com.tuwaiq.project_ghars.DTOIn.OrderItemDTOIn;
 import com.tuwaiq.project_ghars.Model.Order;
 import com.tuwaiq.project_ghars.Model.OrderItem;
 import com.tuwaiq.project_ghars.Model.Product;
@@ -36,14 +37,11 @@ public class OrderItemService {
         return orderItemRepository.findOrderItemByOrder_Id(orderId);
     }
 
-    public void addOrderItem(Integer userId, Integer orderId, OrderItem orderItem) {
+    public void addOrderItem(Integer userId, Integer orderId, OrderItemDTOIn dto) {
 
         User user = userRepository.findUserById(userId);
         if (user == null)
             throw new ApiException("User not found");
-
-//        if (!user.getRole().equals("CUSTOMER"))
-//            throw new ApiException("Only customer can add order items");
 
         Order order = orderRepository.findOrderById(orderId);
         if (order == null)
@@ -55,20 +53,19 @@ public class OrderItemService {
         if (!order.getStatus().equals("PENDING_PAYMENT"))
             throw new ApiException("Cannot modify order items at this stage");
 
-        Product product = productRepository.findProductById(orderItem.getProduct().getId());
+        Product product = productRepository.findProductById(dto.getProductId());
         if (product == null)
             throw new ApiException("Product not found");
 
-        if (orderItem.getQuantity() <= 0)
-            throw new ApiException("Quantity must be greater than zero");
+        OrderItem item = new OrderItem();
+        item.setProduct(product);
+        item.setQuantity(dto.getQuantity());
+        item.setLinePrice(product.getPrice().intValue() * dto.getQuantity());
+        item.setOrder(order);
 
-        orderItem.setOrder(order);
-        orderItem.setLinePrice(
-                product.getPrice().intValue() * orderItem.getQuantity()
-        );
-
-        orderItemRepository.save(orderItem);
+        orderItemRepository.save(item);
     }
+
 
     public void updateOrderItem(Integer userId, Integer orderItemId, OrderItem orderItem) {
 

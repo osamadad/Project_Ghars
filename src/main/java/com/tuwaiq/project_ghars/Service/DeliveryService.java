@@ -66,6 +66,7 @@ public class DeliveryService {
         order.setDelivery(delivery);
 
         driver.setIsBusy(true);
+        delivery.setEstimatedDelivery("يستغرق الطلب ٢٤ ساعه كحد ادنى و يومان محد اعلى");
 
         deliveryRepository.save(delivery);
     }

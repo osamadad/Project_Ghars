@@ -1,6 +1,7 @@
 package com.tuwaiq.project_ghars.Controller;
 
 import com.tuwaiq.project_ghars.Api.ApiResponse;
+import com.tuwaiq.project_ghars.DTOIn.OrderItemDTOIn;
 import com.tuwaiq.project_ghars.Model.OrderItem;
 import com.tuwaiq.project_ghars.Model.User;
 import com.tuwaiq.project_ghars.Service.OrderItemService;
@@ -24,9 +25,11 @@ public class OrderItemController {
     }
 
     @PostMapping("/add/{orderId}")
-    public ResponseEntity<?> addOrderItem(@AuthenticationPrincipal User user, @PathVariable Integer orderId, @Valid @RequestBody OrderItem orderItem) {
-        orderItemService.addOrderItem(user.getId(), orderId, orderItem);
-        return ResponseEntity.status(200).body(new ApiResponse("Order item added successfully"));
+    public ResponseEntity<?> addOrderItem(
+            @AuthenticationPrincipal User user,
+            @PathVariable Integer orderId, @Valid @RequestBody OrderItemDTOIn dto) {
+        orderItemService.addOrderItem(user.getId(), orderId, dto);
+        return ResponseEntity.ok(new ApiResponse("Item added to order"));
     }
 
     @PutMapping("/update/{orderItemId}")

@@ -11,7 +11,7 @@ public class InvoiceDTOout {
 
     private Integer invoiceId;
     private String status;
-    private Integer currency;
+    private String currency;
     private Integer subTotal;
     private Integer total;
 

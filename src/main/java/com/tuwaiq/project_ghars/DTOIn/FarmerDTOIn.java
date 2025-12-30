@@ -37,17 +37,4 @@ public class FarmerDTOIn {
     @PositiveOrZero
     private Integer farmerExperience;
 
-    @NotNull
-    @PositiveOrZero
-    private Integer totalYield;
-
-    @NotNull
-    @PositiveOrZero
-    private Integer seasonalYield;
-
-    @NotNull
-    private Integer levelId;
-
-    @NotNull
-    private Integer farmerAchievementId;
 }

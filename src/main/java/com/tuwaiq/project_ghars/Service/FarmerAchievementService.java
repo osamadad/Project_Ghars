@@ -34,8 +34,8 @@ public class FarmerAchievementService {
 //            throw new ApiException("Access denied");
 //        }
 
-        Farmer farmer = farmerRepository.findFarmerById(userId);
-        if (farmer == null) {
+        User  admin = userRepository.findUserById(userId);
+        if (admin == null) {
             throw new ApiException("Farmer not found");
         }
 
@@ -46,7 +46,7 @@ public class FarmerAchievementService {
 
         FarmerAchievement farmerAchievement = new FarmerAchievement();
         farmerAchievement.setUnlockedAt(LocalDateTime.now());
-        farmerAchievement.setFarmer(farmer);
+//        farmerAchievement.setFarmer(farmer);
         farmerAchievement.setAchievement(achievement);
 
         farmerAchievementRepository.save(farmerAchievement);

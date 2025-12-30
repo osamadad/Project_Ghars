@@ -21,8 +21,8 @@ public class Invoice {
     @NotEmpty(message = "Invoice status is required")
     private String status;
 
-    @NotNull(message = "Currency is required")
-    private Integer currency;
+    @NotEmpty(message = "Currency is required")
+    private String currency;
 
     @NotNull(message = "Subtotal is required")
     @Positive(message = "Subtotal must be greater than zero")
@@ -33,7 +33,13 @@ public class Invoice {
     private Integer total;
 
 
-    @ManyToOne
+    private Integer platformFee;
+
+
+    private Integer sellerAmount;
+
+
+    @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
 }
