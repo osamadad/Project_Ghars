@@ -1,9 +1,11 @@
 package com.tuwaiq.project_ghars.DTOIn;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class AddProductDTOIn {
 
     @NotEmpty
