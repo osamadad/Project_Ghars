@@ -28,4 +28,7 @@ public interface FarmerRepository extends JpaRepository<Farmer, Integer> {
 
     @Query("select farmer from Farmer farmer order by farmer.totalYield")
     List<Farmer> findFarmerWithTheMostYield();
+
+    @Query("select farmer from Farmer farmer order by farmer.totalYield")
+    List<Farmer> findFarmerWithTheMostSeasonalYield();
 }
