@@ -23,7 +23,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class PlantNetService {
 
-    @Value("${PLANTNET_API_KEY}")
+    @Value("${PLANTNET_API_KEY_PROP}")
     private String apiKey;
 
     private final String apiUrlIdentify="https://my-api.plantnet.org/v2/identify/";

@@ -504,7 +504,12 @@ public class AIService {
 
         String response = askAI(prompt);
 
-        VirtualPlot virtualPlot = objectMapper.readValue(response, VirtualPlot.class);
+        String cleaned = response
+                .replaceAll("```json", "")
+                .replaceAll("```", "")
+                .trim();
+
+        VirtualPlot virtualPlot = objectMapper.readValue(cleaned, VirtualPlot.class);
 
         return virtualPlot;
 
@@ -634,9 +639,9 @@ public class AIService {
         if (user==null){
             throw new ApiException("User not found");
         }
-        if (!user.getRole().equalsIgnoreCase("ADMIN")){
-            throw new ApiException("You are not an admin");
-        }
+//        if (!user.getRole().equalsIgnoreCase("ADMIN")){
+//            throw new ApiException("You are not an admin");
+//        }
 
         String prompt = """
                 أنت مولِّد بيانات ذكاء اصطناعي لتطبيق بستنة.

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WhatsappService {
 
-    @Value("${WHATSAPP_TOKEN}")
+    @Value("${WHATSAPP_TOKEN_PROP}")
     private String token;
 
     public void sendWhatsAppMessage(String to, String message) {

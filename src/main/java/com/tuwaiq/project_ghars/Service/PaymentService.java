@@ -71,7 +71,7 @@ public class PaymentService {
                 StandardCharsets.UTF_8
         );
 
-        String callBackUrl = "http://localhost:8080/api/v1/payment/callback";
+        String callBackUrl = "http://ghars.eu-central-1.elasticbeanstalk.com/api/v1/order/my-orders";
 
         // ===== Request Body (بدون String.format) =====
         String requestBody =
