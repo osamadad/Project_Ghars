@@ -53,7 +53,21 @@ RESTful APIs
 
 AI integrations
 
-External services (PlantNet, Moyasar, Email)
+External services (PlantNet, Moyasar, Email, OpenAI)
+
+🔐 Security
+
+Implemented using Spring Security
+
+Role-based access control (USER / ADMIN)
+
+Public access for selected AI learning and identification endpoints
+
+Protected endpoints for farm, store, and admin operations
+
+Security rules configured using requestMatchers
+
+Security configuration implemented by Ibrahim with support from Fouz
 
 👥 Team Contributions
 Osama
@@ -102,6 +116,7 @@ Get farmers who planted a specific plant
 External Integrations
 PlantNet API
 Moyasar Payment Gateway (shared)
+OpenAI (shared)
 
 Work Summary
 Implemented core agriculture entities and business logic
@@ -153,10 +168,12 @@ Managed license upload and approval workflow
 Handled events and event information
 Implemented virtual farming logic
 Implemented email notification system
+Implemented security configuration (requestMatchers)
+Postman API testing (with Fouz)
 
 Fouz
 
-Entities
+Entities (All CRUD)
 Stock
 Product
 Order
@@ -168,25 +185,31 @@ Payment
 Endpoints
 Check order status
 Refund order
-Confirm return
-Update order status
 Change product price
-Add stock
-Reduce stock
 Assign driver to order
-Delivery status management
-Event registration
-Send event notification email
-Store filter by sell type
-Store filter by price range
-Store filter by price order
-Seasonal and suitable plants
+Check event information
+Event registration and send email
+Season and suitable plants
 Filter plants by location
 Recommend best plant for user
-Payment processing and checkout
+Smart irrigation schedule recommendation (planned)
+getMyOrders
+createOrder
+payOrder
+updateOrderStatus
+requestReturn
+confirmReturn
+addOrderItem
+createDelivery
+updateDeliveryStatus
+createInvoice
+getPlatformTotalProfit
+addProduct
+addStockQuantity
 
 External Integrations
 Moyasar Payment Gateway (shared)
+OpenAI (shared)
 
 Work Summary
 Implemented product and stock management
@@ -215,6 +238,16 @@ PlantNet API
 Moyasar Payment Gateway
 
 Email (SMTP / Gmail)
+
+OpenAI
+
+📦 Deliverables
+
+Presentation
+
+Poster
+
+Postman API testing
 
 🚀 Future Enhancements
 
