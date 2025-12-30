@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -42,6 +43,7 @@ public class FieldService {
         field.setCreatedAt(LocalDateTime.now());
         field.setStatus("Seedling");
         field.setFarm(farm);
+        field.setPlantTypes(new HashSet<>());
         field.getPlantTypes().add(plantType);
         plantType.getFields().add(field);
 

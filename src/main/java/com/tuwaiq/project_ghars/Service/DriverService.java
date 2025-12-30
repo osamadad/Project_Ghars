@@ -55,21 +55,19 @@ public class DriverService {
     public Driver getMyDriver(Integer userId) {
 
         User user = userRepository.findUserById(userId);
-        if (user == null) {
+        if (user == null)
             throw new ApiException("User not found");
-        }
 
-        if (!user.getRole().equals("DRIVER")) {
+        if (!user.getRole().equals("DRIVER"))
             throw new ApiException("Access denied");
-        }
 
         Driver driver = driverRepository.findDriverById(userId);
-        if (driver == null) {
+        if (driver == null)
             throw new ApiException("Driver not found");
-        }
 
         return driver;
     }
+
 
     public void updateMyDriver(Integer userId, DriverDTOIn driverDTOIn) {
 

@@ -1,6 +1,7 @@
 package com.tuwaiq.project_ghars.Controller;
 
 import com.tuwaiq.project_ghars.Api.ApiResponse;
+import com.tuwaiq.project_ghars.DTOIn.AddProductDTOIn;
 import com.tuwaiq.project_ghars.Model.Product;
 import com.tuwaiq.project_ghars.Model.User;
 import com.tuwaiq.project_ghars.Service.ProductService;
@@ -28,9 +29,10 @@ public class ProductController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addProduct(@AuthenticationPrincipal User user, @Valid @RequestBody Product product) {
-        productService.addProduct(user.getId(), product);
-        return ResponseEntity.status(200).body(new ApiResponse("Product added successfully"));
+    public ResponseEntity<?> addProduct(@AuthenticationPrincipal User user, @Valid @RequestBody AddProductDTOIn dto) {
+        productService.addProduct(user.getId(), dto);
+        return ResponseEntity.ok(new ApiResponse("Product added successfully")
+        );
     }
 
     @PutMapping("/update/{productId}")

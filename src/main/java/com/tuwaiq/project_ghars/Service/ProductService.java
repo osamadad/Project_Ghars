@@ -1,12 +1,9 @@
 package com.tuwaiq.project_ghars.Service;
 
 import com.tuwaiq.project_ghars.Api.ApiException;
-import com.tuwaiq.project_ghars.Model.Product;
-import com.tuwaiq.project_ghars.Model.Stock;
-import com.tuwaiq.project_ghars.Model.User;
-import com.tuwaiq.project_ghars.Repository.ProductRepository;
-import com.tuwaiq.project_ghars.Repository.StockRepository;
-import com.tuwaiq.project_ghars.Repository.UserRepository;
+import com.tuwaiq.project_ghars.DTOIn.AddProductDTOIn;
+import com.tuwaiq.project_ghars.Model.*;
+import com.tuwaiq.project_ghars.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +18,8 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final StockRepository stockRepository;
     private final UserRepository userRepository;
-
+    private final FarmerRepository farmerRepository;
+private final FarmRepository farmRepository;
 
     public List<Product> getAllProducts(Integer userId) {
 
@@ -43,23 +41,47 @@ public class ProductService {
         return stockRepository.findStockByProduct_Farm_Farmer_Id(user.getFarmer().getId()).stream().map(Stock::getProduct).collect(Collectors.toList());
     }
 
-    public void addProduct(Integer userId, Product product) {
+    public void addProduct(Integer userId, AddProductDTOIn dto) {
 
         User user = userRepository.findUserById(userId);
-        if (user == null) throw new ApiException("User not found");
+        if (user == null)
+            throw new ApiException("User not found");
 
-//        if (!(user.getRole().equals("FARMER") || user.getRole().equals("ADMIN")))
-//            throw new ApiException("Only farmer or admin can add product");
 
-        if (product.getPrice() <= 0) throw new ApiException("Price must be greater than zero");
+        if (user.getFarmer() == null)
+            throw new ApiException("Only farmers can add products");
 
-        if (product.getIsActive() == null) throw new ApiException("Product active status is required");
+        Farm farm = farmRepository.findFarmById(dto.getFarmId());
+        if (farm == null)
+            throw new ApiException("Farm not found");
 
-        if (product.getStock() == null) throw new ApiException("Product must have stock");
 
-        product.getStock().setLastUpdate(LocalDateTime.now());
+        if (!farm.getFarmer().getId().equals(user.getFarmer().getId()))
+            throw new ApiException("This farm does not belong to you");
+
+
+        Product product = new Product();
+        product.setName(dto.getName());
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        product.setSellType(dto.getSellType());
+        product.setIsActive(dto.getIsActive());
+        product.setPhotoUrl(dto.getPhotoUrl());
+        product.setFarm(farm);
+
+
+        Stock stock = new Stock();
+        stock.setTotalQuantity(dto.getTotalQuantity());
+        stock.setUnit(dto.getUnit());
+        stock.setLastUpdate(LocalDateTime.now());
+        stock.setProduct(product);
+
+        product.setStock(stock);
+
         productRepository.save(product);
     }
+
+
 
     public void updateProduct(Integer userId, Integer productId, Product product) {
 

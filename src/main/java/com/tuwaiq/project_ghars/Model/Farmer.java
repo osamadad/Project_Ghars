@@ -27,12 +27,12 @@ public class Farmer {
     @Column(columnDefinition = "int not null")
     private Integer farmerExperience;
 
-    @NotNull
-    @Column(columnDefinition = "int not null")
+
+    @Column()
     private Integer totalYield;
 
-    @NotNull
-    @Column(columnDefinition = "int not null")
+
+    @Column()
     private Integer seasonalYield;
 
     @ManyToOne

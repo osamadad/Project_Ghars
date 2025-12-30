@@ -23,9 +23,9 @@ public class AddressService {
         if (user==null){
             throw new ApiException("User not found");
         }
-//        if (!user.getId().equals(addressDTOIn.getUserId())){
-//            throw new ApiException("User id mismatch use your own id in address");
-//        }
+        if (!user.getId().equals(addressDTOIn.getUserId())){
+            throw new ApiException("User id mismatch use your own id in address");
+        }
         Address address=new Address(null, addressDTOIn.getCountry(), addressDTOIn.getCity(), addressDTOIn.getStreet(), addressDTOIn.getBuildingNumber(), addressDTOIn.getPostalNumber(),user);
         addressRepository.save(address);
     }

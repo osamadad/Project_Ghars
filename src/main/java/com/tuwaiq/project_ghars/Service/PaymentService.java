@@ -14,6 +14,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
@@ -25,17 +28,17 @@ public class PaymentService {
     @Value("${moyasar.secret-key}")
     private String moyasarSecretKey;
 
-    private static final String MOYASAR_API_UTL="https://api.moyasar.com/v1/payments";
+    private static final String MOYASAR_API_URL = "https://api.moyasar.com/v1/payments";
 
-
-    public ResponseEntity<String> startPayment(Integer userId, Integer orderId, PaymentRequestDTOIn paymentRequest) {
+    public ResponseEntity<String> startPayment(
+            Integer userId,
+            Integer orderId,
+            PaymentRequestDTOIn paymentRequest
+    ) {
 
         User user = userRepository.findUserById(userId);
         if (user == null)
             throw new ApiException("User not found");
-
-//        if (!user.getRole().equals("CUSTOMER"))
-//            throw new ApiException("Only customer can make payment");
 
         Order order = orderRepository.findOrderById(orderId);
         if (order == null)
@@ -51,37 +54,39 @@ public class PaymentService {
         if (existing != null && existing.getStatus().equals("PAID"))
             throw new ApiException("Order already paid");
 
-        String url="https://api.moyasar.com/v1/payments";
+        // ===== amount بالهللات (حل نهائي) =====
+        long amountInHalalah = Math.round(order.getTotalPrice() * 100);
 
-        String callBackUrl="https://your-server.com/api/payments/callback";
-
+        // ===== Payment entity =====
         Payment payment = new Payment();
-        payment.setAmount(order.getTotalPrice());
+        payment.setAmount(order.getTotalPrice()); // بالريال
         payment.setCurrency("SAR");
-        payment.setDescription("Payment for order "+order.getId()+" amount to "+ payment.getAmount());
-
-
-        String requestBody=String.format(
-                "source[type]=card" +
-                        "&source[name]=%s" +
-                        "&source[number]=%s" +
-                        "&source[cvc]=%s" +
-                        "&source[month]=%s" +
-                        "&source[year]=%s" +
-                        "&amount=%d" +
-                        "&currency=%s" +
-                        "&description=%s" +
-                        "&callback_url=%s",
-                paymentRequest.getName(),
-                paymentRequest.getNumber(),
-                paymentRequest.getCvc(),
-                paymentRequest.getMonth(),
-                paymentRequest.getYear(),
-                (int) (payment.getAmount() * 100),
-                payment.getCurrency(),
-                payment.getDescription(),
-                callBackUrl
+        payment.setDescription(
+                "Payment for order #" + order.getId() +
+                        " amount " + order.getTotalPrice() + " SAR"
         );
+
+        String descriptionEncoded = URLEncoder.encode(
+                payment.getDescription(),
+                StandardCharsets.UTF_8
+        );
+
+        String callBackUrl = "http://localhost:8080/api/v1/payment/callback";
+
+        // ===== Request Body (بدون String.format) =====
+        String requestBody =
+                "source[type]=card" +
+                        "&source[name]=" + paymentRequest.getName() +
+                        "&source[number]=" + paymentRequest.getNumber() +
+                        "&source[cvc]=" + paymentRequest.getCvc() +
+                        "&source[month]=" + paymentRequest.getMonth() +
+                        "&source[year]=" + paymentRequest.getYear() +
+                        "&amount=" + amountInHalalah +
+                        "&currency=SAR" +
+                        "&description=" + descriptionEncoded +
+                        "&callback_url=" + callBackUrl;
+
+        System.out.println("MOYASAR REQUEST BODY = " + requestBody);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(moyasarSecretKey, "");
@@ -89,15 +94,13 @@ public class PaymentService {
 
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
-        // Send the request
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(
-                url,
+                MOYASAR_API_URL,
                 HttpMethod.POST,
                 entity,
                 String.class
         );
-
 
         payment.setStatus("PENDING");
         payment.setProvider("MOYASAR");
@@ -106,33 +109,8 @@ public class PaymentService {
 
         paymentRepository.save(payment);
 
-        // Return the API response
         return ResponseEntity
                 .status(response.getStatusCode())
                 .body(response.getBody());
-    }
-
-    public String getPaymentStatus(String paymentId) {
-
-        String url="https://api.moyasar.com/v1/payments";
-
-        // Prepare headers with authentication
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(moyasarSecretKey, "");
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        // Call Moyasar API
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(
-                url +"/"+ paymentId,
-                HttpMethod.GET,
-                entity,
-                String.class
-        );
-
-        // Return the response body
-        return response.getBody();
     }
 }
