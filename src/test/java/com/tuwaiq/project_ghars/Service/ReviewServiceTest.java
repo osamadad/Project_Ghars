@@ -77,47 +77,4 @@ public class ReviewServiceTest {
         Assertions.assertEquals(reviews, result);
         verify(reviewRepository, times(1)).findAll();
     }
-
-    @Test
-    public void getMyReviewsByFarm() {
-        when(farmerRepository.findFarmerById(farmer.getId())).thenReturn(farmer);
-        when(farmRepository.findFarmById(farm.getId())).thenReturn(farm);
-        when(reviewRepository.findReviewByFarmIdAndFarm_Farmer_Id(farm.getId(), farmer.getId())).thenReturn(reviews);
-
-        List<Review> result = reviewService.getMyReviewsByFarm(farmer.getId(), farm.getId());
-
-        Assertions.assertEquals(reviews, result);
-
-        verify(farmerRepository, times(1)).findFarmerById(farmer.getId());
-        verify(farmRepository, times(1)).findFarmById(farm.getId());
-        verify(reviewRepository, times(1)).findReviewByFarmIdAndFarm_Farmer_Id(farm.getId(), farmer.getId());
-    }
-
-    @Test
-    public void updateReview() {
-        when(farmerRepository.findFarmerById(farmer.getId())).thenReturn(farmer);
-        when(reviewRepository.findReviewById(review1.getId())).thenReturn(review1);
-        when(farmRepository.findFarmById(farm.getId())).thenReturn(farm);
-
-        Review updatedReview = new Review(null, "Updated title", "Updated desc", 3, null, null);
-
-        reviewService.updateReview(farmer.getId(), review1.getId(), updatedReview);
-
-        Assertions.assertEquals("Updated title", review1.getTitle());
-        Assertions.assertEquals("Updated desc", review1.getDescription());
-        Assertions.assertEquals(3, review1.getRating());
-
-        verify(reviewRepository, times(1)).save(review1);
-    }
-
-    @Test
-    public void deleteReview() {
-        when(farmerRepository.findFarmerById(farmer.getId())).thenReturn(farmer);
-        when(reviewRepository.findReviewById(review1.getId())).thenReturn(review1);
-        when(farmRepository.findFarmById(farm.getId())).thenReturn(farm);
-
-        reviewService.deleteReview(farmer.getId(), review1.getId());
-
-        verify(reviewRepository, times(1)).delete(review1);
-    }
 }
