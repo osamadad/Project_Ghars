@@ -87,10 +87,4 @@ public class VirtualPlotController {
         virtualPlotService.harvestPlant(plotId);
         return ResponseEntity.status(200).body(new ApiResponse("Plant harvested successfully"));
     }
-
-    @PostMapping("/test/{plantId}")
-    public ResponseEntity<?> test(@PathVariable Integer plantId){
-        virtualPlotService.test(plantId);
-        return ResponseEntity.status(200).body(new ApiResponse("test tested successfully"));
-    }
 }

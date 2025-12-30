@@ -172,8 +172,8 @@ public class VirtualPlotService {
         virtualPlot.setPlantType(plantType);
 
         String urlWebhook="https://ososdad.app.n8n.cloud/webhook-test/4bf991e7-e740-4da3-9ded-30c0e32ca68b";
-        RestTemplate restTemplate = null;
-        
+        RestTemplate restTemplate = new RestTemplate();
+
         String url = UriComponentsBuilder
                 .fromUriString(urlWebhook)
                 .queryParam("id", plantId)
@@ -374,21 +374,4 @@ public class VirtualPlotService {
         virtualPlotRepository.save(virtualPlot);
     }
 
-    public void test(Integer plantId){
-        String urlWebhook="https://ososdad.app.n8n.cloud/webhook-test/4bf991e7-e740-4da3-9ded-30c0e32ca68b";
-        RestTemplate restTemplate = new RestTemplate();
-
-        String url = UriComponentsBuilder
-                .fromUriString(urlWebhook)
-                .queryParam("id", plantId)
-                .build()
-                .toUriString();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-
-        restTemplate.postForEntity(url, requestEntity, String.class);
-    }
 }
