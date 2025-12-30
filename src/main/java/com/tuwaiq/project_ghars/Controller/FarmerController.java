@@ -75,6 +75,12 @@ public class FarmerController {
         return ResponseEntity.status(200).body(farmerService.getFarmerWithTheMostYield());
     }
 
+    @GetMapping("/most-seasonal-yield")
+    public ResponseEntity<?> getFarmerWithMostSeasonalYield() {
+        return ResponseEntity.status(200)
+                .body(farmerService.getFarmerWithTheMostSeasonalYield());
+    }
+
     @PostMapping("/talk/{farmerId}/{message}")
     public ResponseEntity<?> talkWithFarmer(@AuthenticationPrincipal User user, @PathVariable Integer farmerId, @PathVariable String message) {
         farmerService.talkWithFarmers(user.getId(), farmerId, message);
@@ -85,5 +91,11 @@ public class FarmerController {
     public ResponseEntity<?> talkWithFarmersWhoPlantedAPlant(@AuthenticationPrincipal User user, @PathVariable Integer farmerId, @PathVariable String plantName) {
         farmerService.talkWithFarmersWhoPlantedAPlant(user.getId(), farmerId, plantName);
         return ResponseEntity.status(200).body(new ApiResponse("Message sent successfully"));
+    }
+
+    @PutMapping("/reset-seasonal-yield")
+    public ResponseEntity<?> resetSeasonalYield(@AuthenticationPrincipal User user){
+        farmerService.resetSeasonalYield(user.getId());
+        return ResponseEntity.status(200).body(new ApiResponse("The seasonal yield have been updated successfully"));
     }
 }

@@ -84,7 +84,7 @@ public class FarmService {
         farm.setLicense(farmDTOIn.getLicense());
         farm.setName(farmDTOIn.getName());
         farm.setDescription(farmDTOIn.getDescription());
-        if (!farmDTOIn.getSize().matches("Small| Medium | Large")){
+        if (!farmDTOIn.getSize().matches("Small|Medium|Large")){
             throw new ApiException("Sorry, the farm size must be Small, Medium, or large, please try again");
         }
         farm.setSize(farmDTOIn.getSize());

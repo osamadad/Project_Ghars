@@ -171,6 +171,10 @@ public class FarmerService {
         return farmerRepository.findFarmerWithTheMostYield();
     }
 
+    public List<Farmer> getFarmerWithTheMostSeasonalYield() {
+        return farmerRepository.findFarmerWithTheMostSeasonalYield();
+    }
+
     public void talkWithFarmers(Integer userId, Integer farmerId, String message){
         Farmer farmer=farmerRepository.findFarmerById(userId);
         if (farmer==null){
@@ -211,5 +215,20 @@ public class FarmerService {
                 """.formatted(plantName);
 
         whatsappService.sendWhatsAppMessage(farmers.get(0).getUser().getPhoneNumber(),prompt);
+    }
+
+    public void resetSeasonalYield(Integer userId){
+        User user=userRepository.findUserById(userId);
+        if (user==null){
+            throw new ApiException("Admin not found");
+        }
+        if (!user.getRole().equals("ADMIN")){
+            throw new ApiException("You are not admin");
+        }
+        List<Farmer> farmers=farmerRepository.findAll();
+        for (Farmer farmer:farmers){
+            farmer.setSeasonalYield(0);
+            farmerRepository.save(farmer);
+        }
     }
 }
