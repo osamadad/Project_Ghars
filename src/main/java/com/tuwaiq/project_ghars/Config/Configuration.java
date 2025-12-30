@@ -24,7 +24,7 @@ public class Configuration {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
 
-                        /* ================= PUBLIC ================= */
+                        /* ================= PUBLIC (permitAll) ================= */
 
                         // Register
                         .requestMatchers(
@@ -34,15 +34,25 @@ public class Configuration {
                                 "/api/v1/user/register"
                         ).permitAll()
 
-                        // Event (view)
+                        // Learn planting (Public)
+                        .requestMatchers(
+                                "/api/v1/plant/learn/green-house",
+                                "/api/v1/plant/identify/{organ}",
+                                "/api/v1/plant/identify-diseases/{organ}",
+                                "/api/v1/plant/learn/water-planting"
+                        ).permitAll()
+
+                        // Event (view) Public
                         .requestMatchers(
                                 "/api/v1/event/get",
                                 "/api/v1/event/get/{eventId}",
                                 "/api/v1/event/upcoming",
-                                "/api/v1/event/upcoming/city/{city}"
+                                "/api/v1/event/upcoming/city/{city}",
+                                "/api/v1/farmer/most-seasonal-yield",
+                                "/api/v1/farmer/reset-seasonal-yield"
                         ).permitAll()
 
-                        // Plant (view & filter)
+                        // Plant (view & filter) Public
                         .requestMatchers(
                                 "/api/v1/plant/get",
                                 "/api/v1/plant/family/{family}",
@@ -58,7 +68,7 @@ public class Configuration {
                                 "/api/v1/plant/life-span/{lifeSpan}"
                         ).permitAll()
 
-                        // Product (view)
+                        // Product (view) Public
                         .requestMatchers(
                                 "/api/v1/product/get-all",
                                 "/api/v1/product/by-sell-type/{sellType}",
@@ -66,14 +76,13 @@ public class Configuration {
                                 "/api/v1/product/price-range/{minPrice}/{maxPrice}"
                         ).permitAll()
 
-                        // Review (view)
+                        // Review (view) Public
                         .requestMatchers(
                                 "/api/v1/review/get",
                                 "/api/v1/review/get-by-farm/{farmId}"
                         ).permitAll()
 
                         /* ================= ADMIN ================= */
-
                         .requestMatchers(
                                 "/api/v1/achievement/add",
                                 "/api/v1/achievement/get",
@@ -91,10 +100,18 @@ public class Configuration {
 
                                 "/api/v1/farm/license/accept/{farmId}",
                                 "/api/v1/farm/license/reject/{farmId}"
-                        ).permitAll()
+                        ).hasAuthority("ADMIN")
+
+                        /* ================= ADDRESS (ALL ROLES) ================= */
+                        .requestMatchers(
+                                "/api/v1/address/add",
+                                "/api/v1/address/get",
+                                "/api/v1/address/get-my-address",
+                                "/api/v1/address/update",
+                                "/api/v1/address/delete"
+                        ).hasAnyAuthority("CUSTOMER", "FARMER", "DRIVER", "ADMIN")
 
                         /* ================= FARMER ================= */
-
                         .requestMatchers(
                                 // Farm
                                 "/api/v1/farm/add",
@@ -124,7 +141,7 @@ public class Configuration {
                                 "/api/v1/stock/update/{stockId}",
                                 "/api/v1/stock/delete/{stockId}",
 
-                                // Product
+                                // Product (Farmer manage)
                                 "/api/v1/product/add",
                                 "/api/v1/product/my-products",
                                 "/api/v1/product/update/{productId}",
@@ -175,31 +192,19 @@ public class Configuration {
                                 "/api/v1/ai/ai/recommend-plant",
                                 "/api/v1/ai/ai/filter-plants-by-location/{city}",
                                 "/api/v1/ai/{plantId}",
-                                "/api/v1/ai/add/{plantName}"
-                        ).permitAll()
-//driver
-                        .requestMatchers(
-                                "/api/v1/driver/register",
-                                "/api/v1/driver/get",
-                                "/api/v1/driver/update",
-                                "/api/v1/driver/delete",
+                                "/api/v1/ai/add/{plantName}",
+
+                                // Delivery create/update (if you فعلاً تبيها للمزارع)
                                 "/api/v1/delivery/create/{orderId}/{driverId}",
                                 "/api/v1/delivery/update-status/{deliveryId}"
-                        ).permitAll()
-                        /* ================= CUSTOMER ================= */
+                        ).hasAuthority("FARMER")
 
+                        /* ================= CUSTOMER ================= */
                         .requestMatchers(
                                 // Customer
                                 "/api/v1/customer/get",
                                 "/api/v1/customer/update",
                                 "/api/v1/customer/delete",
-
-                                // Address
-                                "/api/v1/address/add",
-                                "/api/v1/address/get",
-                                "/api/v1/address/get-my-address",
-                                "/api/v1/address/update",
-                                "/api/v1/address/delete",
 
                                 // Order
                                 "/api/v1/order/get-all",
@@ -225,7 +230,7 @@ public class Configuration {
                                 "/api/v1/invoice/update/{invoiceId}",
                                 "/api/v1/invoice/delete/{invoiceId}",
 
-                                // Review
+                                // Review (write)
                                 "/api/v1/review/add/{farmId}",
                                 "/api/v1/review/update/{reviewId}",
                                 "/api/v1/review/delete/{reviewId}",
@@ -233,18 +238,16 @@ public class Configuration {
                                 // Event interaction
                                 "/api/v1/event/join/{eventId}",
                                 "/api/v1/event/leave/{eventId}"
-                        ).permitAll()
+                        ).hasAuthority("CUSTOMER")
 
                         /* ================= DRIVER ================= */
-
                         .requestMatchers(
                                 "/api/v1/driver/get",
                                 "/api/v1/driver/update",
                                 "/api/v1/driver/delete",
                                 "/api/v1/delivery/my",
-                                "/api/v1/delivery/create/{orderId}/{driverId}",
                                 "/api/v1/delivery/update-status/{deliveryId}"
-                        ).permitAll()
+                        ).hasAuthority("DRIVER")
 
                         .anyRequest().authenticated()
                 )
@@ -253,8 +256,7 @@ public class Configuration {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 )
-                .httpBasic(basic -> {
-                })
+                .httpBasic(basic -> { })
                 .build();
     }
 }
