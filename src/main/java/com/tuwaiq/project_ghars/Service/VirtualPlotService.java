@@ -249,6 +249,32 @@ public class VirtualPlotService {
         virtualPlotRepository.save(virtualPlot);
     }
 
+    public void decreaseWater(Integer plotId){
+        VirtualPlot virtualPlot=virtualPlotRepository.findVirtualPlotById(plotId);
+        if (virtualPlot==null){
+            throw new ApiException("Plot not found");
+        }
+        if (virtualPlot.getPlantType()==null){
+            throw new ApiException("There is no plant in this plot");
+        }
+        virtualPlot.setWaterMeter(virtualPlot.getWaterMeter()-10);
+
+        virtualPlotRepository.save(virtualPlot);
+    }
+
+    public void decreaseSun(Integer plotId){
+        VirtualPlot virtualPlot=virtualPlotRepository.findVirtualPlotById(plotId);
+        if (virtualPlot==null){
+            throw new ApiException("Plot not found");
+        }
+        if (virtualPlot.getPlantType()==null){
+            throw new ApiException("There is no plant in this plot");
+        }
+        virtualPlot.setSunMeter(virtualPlot.getSunMeter()-10);
+
+        virtualPlotRepository.save(virtualPlot);
+    }
+
     public void checkPlant(Integer plotId){
         VirtualPlot virtualPlot=virtualPlotRepository.findVirtualPlotById(plotId);
         if (virtualPlot==null){

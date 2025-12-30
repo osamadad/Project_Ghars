@@ -62,6 +62,20 @@ public class VirtualPlotController {
         return ResponseEntity.status(200).body(new ApiResponse("Sunlight added successfully"));
     }
 
+    @PutMapping("/decrease-water/{plotId}")
+    public ResponseEntity<?> decreaseWater(@PathVariable Integer plotId) {
+        virtualPlotService.decreaseWater(plotId);
+        return ResponseEntity.status(200)
+                .body(new ApiResponse("Water decreased successfully"));
+    }
+
+    @PutMapping("/decrease-sun/{plotId}")
+    public ResponseEntity<?> decreaseSun(@PathVariable Integer plotId) {
+        virtualPlotService.decreaseSun(plotId);
+        return ResponseEntity.status(200)
+                .body(new ApiResponse("Sunlight decreased successfully"));
+    }
+
     @PutMapping("/check-plant/{plotId}")
     public ResponseEntity<?> checkPlant(@PathVariable Integer plotId) {
         virtualPlotService.checkPlant(plotId);
