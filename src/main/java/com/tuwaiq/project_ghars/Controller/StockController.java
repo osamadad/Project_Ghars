@@ -1,6 +1,7 @@
 package com.tuwaiq.project_ghars.Controller;
 
 import com.tuwaiq.project_ghars.Api.ApiResponse;
+import com.tuwaiq.project_ghars.DTOIn.UpdateStockQuantityDTOIn;
 import com.tuwaiq.project_ghars.Model.Stock;
 import com.tuwaiq.project_ghars.Model.User;
 import com.tuwaiq.project_ghars.Service.StockService;
@@ -26,10 +27,13 @@ public class StockController {
         return ResponseEntity.status(200).body(stockService.getMyStock(user.getId()));
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addStock(@AuthenticationPrincipal User user, @RequestBody @Valid Stock stock) {
-        stockService.addStock(user.getId(), stock);
-        return ResponseEntity.status(200).body(new ApiResponse("Stock added successfully"));
+
+
+    @PutMapping("/add-quantity/{stockId}")
+    public ResponseEntity<?> addStockQuantity(@AuthenticationPrincipal User user, @PathVariable Integer stockId, @Valid @RequestBody UpdateStockQuantityDTOIn dto) {
+        stockService.addStockQuantity(user.getId(), stockId, dto);
+        return ResponseEntity.ok(new ApiResponse("Stock quantity updated successfully")
+        );
     }
 
     @PutMapping("/update/{stockId}")

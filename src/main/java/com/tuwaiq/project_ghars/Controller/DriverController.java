@@ -26,8 +26,7 @@ public class DriverController {
 
     @GetMapping("/get")
     public ResponseEntity<?> getMyDriver(@AuthenticationPrincipal User user) {
-        Driver driver = driverService.getMyDriver(user.getId());
-        return ResponseEntity.status(200).body(driver);
+        return ResponseEntity.status(200).body(driverService.getMyDriver(user.getId()));
     }
 
     @PutMapping("/update")

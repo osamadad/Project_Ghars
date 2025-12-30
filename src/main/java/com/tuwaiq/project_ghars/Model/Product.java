@@ -36,13 +36,13 @@ public class Product {
     @NotNull(message = "Product active status is required")
     private Boolean isActive;
 
-    @NotEmpty(message = "Photo URL is required")
+
     private String photoUrl;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "stock_id")
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     private Stock stock;
+
 
     @ManyToOne
     private Farm farm;

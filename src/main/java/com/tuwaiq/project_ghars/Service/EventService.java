@@ -155,7 +155,16 @@ public class EventService {
 
         event.getUsers().remove(user);
         eventRepository.save(event);
+
+        String subject = "تم إلغاء تسجيلك من الفعالية 🌱";
+        String body = "مرحبًا " + user.getName() + "\n\n" +
+                "تم تسجيل خروجك من الفعالية بنجاح:\n" +
+                event.getTitle() + "\n\n" +
+                "نتمنى أن نراك في فعالية أخرى قريبًا 🤍";
+
+        emailService.sendEmail(user.getEmail(), subject, body);
     }
+
 
     public List<Event> getUpcomingEvents() {
         return eventRepository.findAllByDateGreaterThanEqualOrderByDateAscStartTimeAsc(LocalDate.now());

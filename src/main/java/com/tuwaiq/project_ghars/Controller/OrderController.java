@@ -1,6 +1,7 @@
 package com.tuwaiq.project_ghars.Controller;
 
 import com.tuwaiq.project_ghars.Api.ApiResponse;
+import com.tuwaiq.project_ghars.DTOIn.CreateOrderDTOIn;
 import com.tuwaiq.project_ghars.DTOIn.PaymentRequestDTOIn;
 import com.tuwaiq.project_ghars.Model.Order;
 import com.tuwaiq.project_ghars.Model.User;
@@ -19,20 +20,22 @@ public class OrderController {
 
     @GetMapping("/get-all")
     public ResponseEntity<?> getAllOrders(@AuthenticationPrincipal User user) {
-        return ResponseEntity.status(200).body(orderService.getAllOrders(user.getId()));
+        return ResponseEntity.ok(orderService.getAllOrders(user.getId()));
     }
+
 
     @GetMapping("/my-orders")
     public ResponseEntity<?> getMyOrders(@AuthenticationPrincipal User user) {
-        return ResponseEntity.status(200).body(orderService.getMyOrders(user.getId()));
+        return ResponseEntity.ok(orderService.getMyOrders(user.getId()));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createOrder(@AuthenticationPrincipal User user, @Valid @RequestBody Order order
-    ) {
-        orderService.createOrder(user.getId(), order);
-        return ResponseEntity.status(200).body(new ApiResponse("Order created successfully"));
+    public ResponseEntity<?> createOrder(@AuthenticationPrincipal User user, @Valid @RequestBody CreateOrderDTOIn dto
+    ) {orderService.createOrder(user.getId(), dto);
+        return ResponseEntity.ok(new ApiResponse("Order created successfully"));
     }
+
+
 
 
     @PostMapping("/pay/{orderId}")

@@ -2,6 +2,7 @@ package com.tuwaiq.project_ghars.Service;
 
 import com.tuwaiq.project_ghars.Api.ApiException;
 import com.tuwaiq.project_ghars.DTOout.InvoiceDTOout;
+import com.tuwaiq.project_ghars.DTOout.PlatformProfitDTO;
 import com.tuwaiq.project_ghars.Model.Invoice;
 import com.tuwaiq.project_ghars.Model.Order;
 import com.tuwaiq.project_ghars.Model.User;
@@ -119,4 +120,21 @@ public class InvoiceService {
                 invoice.getOrder().getCreatedAt()
         );
     }
+
+    public PlatformProfitDTO getPlatformTotalProfit(Integer userId) {
+
+        User user = userRepository.findUserById(userId);
+        if (user == null)
+            throw new ApiException("User not found");
+
+        Integer totalProfit = invoiceRepository.findAll().stream().mapToInt(invoice -> invoice.getPlatformFee() != null ? invoice.getPlatformFee() : 0).sum();
+
+        return new PlatformProfitDTO("نسبة أرباح المتجر", totalProfit
+        );
+    }
+
+
+
+
+
 }

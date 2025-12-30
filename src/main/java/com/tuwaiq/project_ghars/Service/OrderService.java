@@ -1,13 +1,19 @@
 package com.tuwaiq.project_ghars.Service;
 
 import com.tuwaiq.project_ghars.Api.ApiException;
+import com.tuwaiq.project_ghars.DTOIn.CreateOrderDTOIn;
+import com.tuwaiq.project_ghars.DTOIn.OrderItemDTOIn;
 import com.tuwaiq.project_ghars.DTOIn.PaymentRequestDTOIn;
+import com.tuwaiq.project_ghars.DTOout.OrderDTOOut;
+import com.tuwaiq.project_ghars.DTOout.OrderItemDTOOut;
 import com.tuwaiq.project_ghars.Model.*;
 import com.tuwaiq.project_ghars.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -23,69 +29,98 @@ public class OrderService {
     private final EmailService emailService;
 
 
-    public List<Order> getAllOrders(Integer userId) {
+    public List<OrderDTOOut> getAllOrders(Integer userId) {
 
         User user = userRepository.findUserById(userId);
         if (user == null)
             throw new ApiException("User not found");
 
-//        if (!user.getRole().equals("ADMIN"))
-//            throw new ApiException("Access denied");
+//    if (!user.getRole().equals("ADMIN"))
+//        throw new ApiException("Access denied");
 
-        return orderRepository.findAll();
-    }
-
-    public List<Order> getMyOrders(Integer userId) {
-
-        User user = userRepository.findUserById(userId);
-        if (user == null)
-            throw new ApiException("User not found");
-
-//        if (!user.getRole().equals("CUSTOMER"))
-//            throw new ApiException("Only customer can access this");
-
-        return orderRepository.findOrderByCustomer_Id(
-                user.getCustomer().getId()
-        );
+        return orderRepository.findAll().stream()
+                .map(order -> new OrderDTOOut(
+                        order.getId(),
+                        order.getStatus(),
+                        order.getTotalPrice(),
+                        order.getCreatedAt(),
+                        order.getOrderItem().stream()
+                                .map(item -> new OrderItemDTOOut(
+                                        item.getProduct().getId(),
+                                        item.getProduct().getName(),
+                                        item.getQuantity(),
+                                        item.getLinePrice())).toList())).toList();
     }
 
 
-    public void createOrder(Integer userId, Order order) {
+    public List<OrderDTOOut> getMyOrders(Integer userId) {
+
         User user = userRepository.findUserById(userId);
         if (user == null)
             throw new ApiException("User not found");
 
-//        if (!user.getRole().equals("CUSTOMER"))
-//            throw new ApiException("Only customer can create order");
+//    if (!user.getRole().equals("CUSTOMER"))
+//        throw new ApiException("Only customer can access this");
 
-        if (order.getOrderItem() == null || order.getOrderItem().isEmpty())
-            throw new ApiException("Order must contain items");
+        return orderRepository.findOrderByCustomer_Id(user.getCustomer().getId()).stream().map(order -> new OrderDTOOut(
+                        order.getId(),
+                        order.getStatus(),
+                        order.getTotalPrice(),
+                        order.getCreatedAt(),
+                        order.getOrderItem().stream()
+                                .map(item -> new OrderItemDTOOut(
+                                        item.getProduct().getId(),
+                                        item.getProduct().getName(),
+                                        item.getQuantity(),
+                                        item.getLinePrice())).toList())).toList();
+    }
+
+
+
+    public void createOrder(Integer userId, CreateOrderDTOIn dto) {
+
+        User user = userRepository.findUserById(userId);
+        if (user == null)
+            throw new ApiException("User not found");
+
+        Order order = new Order();
+        order.setCustomer(user.getCustomer());
+        order.setStatus("PENDING_PAYMENT");
+        order.setCreatedAt(LocalDateTime.now());
+
         double totalPrice = 0;
+        List<OrderItem> orderItems = new ArrayList<>();
 
-        for (OrderItem item : order.getOrderItem()) {
-            Product product = productRepository.findProductById(item.getProduct().getId());
+        for (Map.Entry<Integer, Integer> entry : dto.getItems().entrySet()) {
 
+            Integer productId = entry.getKey();
+            Integer quantity = entry.getValue();
+
+            if (quantity <= 0)
+                throw new ApiException("Quantity must be greater than zero");
+
+            Product product = productRepository.findProductById(productId);
             if (product == null)
                 throw new ApiException("Product not found");
 
             if (!product.getIsActive())
                 throw new ApiException("Product is not active");
 
+            OrderItem item = new OrderItem();
+            item.setProduct(product);
+            item.setQuantity(quantity);
+            item.setLinePrice(product.getPrice().intValue() * quantity);
             item.setOrder(order);
-            item.setLinePrice(product.getPrice().intValue() * item.getQuantity()
-            );
 
             totalPrice += item.getLinePrice();
+            orderItems.add(item);
         }
 
+        order.setOrderItem(orderItems);
         order.setTotalPrice(totalPrice);
-        order.setStatus("PENDING_PAYMENT");
-        order.setCreatedAt(LocalDateTime.now());
-        order.setCustomer(user.getCustomer());
 
         orderRepository.save(order);
     }
-
 
 
     public String payOrder(Integer userId, Integer orderId, PaymentRequestDTOIn paymentRequestDTOIn) {
@@ -93,9 +128,6 @@ public class OrderService {
         User user = userRepository.findUserById(userId);
         if (user == null)
             throw new ApiException("User not found");
-
-//        if (!user.getRole().equals("CUSTOMER"))
-//            throw new ApiException("Only customer can pay order");
 
         Order order = orderRepository.findOrderById(orderId);
         if (order == null)
@@ -125,15 +157,15 @@ public class OrderService {
                 throw new ApiException("Stock not found");
 
             if (item.getQuantity() > stock.getTotalQuantity())
-                throw new ApiException(
-                        "Not enough stock for product: " + product.getName()
-                );
+                throw new ApiException("Not enough stock for product: " + product.getName());
         }
+
 
         String paymentResponse = paymentService.startPayment(userId, orderId, paymentRequestDTOIn).getBody();
 
         order.setStatus("PAID");
         orderRepository.save(order);
+
 
         for (OrderItem item : order.getOrderItem()) {
             Stock stock = item.getProduct().getStock();
@@ -141,19 +173,66 @@ public class OrderService {
             stockRepository.save(stock);
         }
 
+
+        int total = order.getTotalPrice().intValue();
+        int platformFee = Math.round(total * 0.05f);
+        int sellerAmount = total - platformFee;
+
+
         Invoice invoice = new Invoice();
         invoice.setOrder(order);
         invoice.setStatus("PAID");
-        invoice.setCurrency(1);
-        invoice.setSubTotal(order.getTotalPrice().intValue());
-        invoice.setTotal(order.getTotalPrice().intValue());
+        invoice.setCurrency("SAR");
+        invoice.setSubTotal(total);
+        invoice.setTotal(total);
+        invoice.setPlatformFee(platformFee);
+        invoice.setSellerAmount(sellerAmount);
+
         invoiceRepository.save(invoice);
 
-        emailService.sendEmail(user.getEmail(), "Invoice for order #" + order.getId(), "Your order has been paid successfully."
+
+        StringBuilder itemsDetails = new StringBuilder();
+        for (OrderItem item : order.getOrderItem()) {
+            itemsDetails.append("• ")
+                    .append(item.getProduct().getName())
+                    .append(" | الكمية: ")
+                    .append(item.getQuantity())
+                    .append(" | السعر: ")
+                    .append(item.getLinePrice())
+                    .append(" ريال\n");
+        }
+
+
+        String emailBody =
+                "مرحبًا " + user.getName() + " 🌿\n\n" +
+                        "نشكر لك تسوقك من متجر غرس، يسعدنا إبلاغك بأن عملية الدفع تمت بنجاح.\n\n" +
+
+                        "🧾 تفاصيل الطلب:\n" +
+                        "----------------------------------\n" +
+                        "رقم الطلب: " + order.getId() + "\n" +
+                        "تاريخ الطلب: " + order.getCreatedAt() + "\n" +
+                        "حالة الطلب: مدفوع\n\n" +
+
+                        "🛒 المنتجات المطلوبة:\n" +
+                        itemsDetails + "\n" +
+
+                        "💰 ملخص المبلغ:\n" +
+                        "إجمالي الطلب: " + total + " ريال\n" +
+
+
+                        "📦 سيتم تجهيز طلبك وشحنه في أقرب وقت ممكن.\n\n" +
+                        "إذا كان لديك أي استفسار، لا تتردد في التواصل معنا.\n\n" +
+                        "مع خالص الشكر والتقدير،\n" +
+                        "فريق متجر غرس 🌱";
+
+        emailService.sendEmail(user.getEmail(), "فاتورة طلبك من متجر غرس 🌿 | رقم الطلب #" + order.getId(), emailBody
         );
 
         return paymentResponse;
     }
+
+
+
 
 
     public void updateOrderStatus(Integer userId, Integer orderId, String status) {

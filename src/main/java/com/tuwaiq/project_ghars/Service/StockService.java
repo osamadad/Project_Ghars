@@ -1,6 +1,7 @@
 package com.tuwaiq.project_ghars.Service;
 
 import com.tuwaiq.project_ghars.Api.ApiException;
+import com.tuwaiq.project_ghars.DTOIn.UpdateStockQuantityDTOIn;
 import com.tuwaiq.project_ghars.Model.Stock;
 import com.tuwaiq.project_ghars.Model.User;
 import com.tuwaiq.project_ghars.Repository.StockRepository;
@@ -44,20 +45,27 @@ public class StockService {
         );
     }
 
-    public void addStock(Integer userId, Stock stock) {
+    public void addStockQuantity(Integer userId, Integer stockId, UpdateStockQuantityDTOIn dto) {
 
         User user = userRepository.findUserById(userId);
         if (user == null)
             throw new ApiException("User not found");
 
-//        if (!(user.getRole().equals("FARMER") || user.getRole().equals("ADMIN")))
-//            throw new ApiException("Only farmer or admin can add stock");
+        if (user.getFarmer() == null)
+            throw new ApiException("Only farmers can update stock");
 
-        if (stock.getProduct() == null)
-            throw new ApiException("Stock must be linked to a product");
+        Stock stock = stockRepository.findStockById(stockId);
+        if (stock == null)
+            throw new ApiException("Stock not found");
 
-        if (stock.getTotalQuantity() < 0)
-            throw new ApiException("Stock quantity cannot be negative");
+
+        if (!stock.getProduct().getFarm().getFarmer().getId()
+                .equals(user.getFarmer().getId()))
+            throw new ApiException("This stock does not belong to you");
+
+        stock.setTotalQuantity(
+                stock.getTotalQuantity() + dto.getAddedQuantity()
+        );
 
         stock.setLastUpdate(LocalDateTime.now());
         stockRepository.save(stock);
