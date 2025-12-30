@@ -8,12 +8,13 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 public class YieldDTOIn {
 
     @NotEmpty(message = "Sorry, the harvest date can't be empty, please try again")
-    @FutureOrPresent(message = "Sorry, the harvest date can't be in the past, please try again")
     private String harvestDate;
     @Positive(message = "Sorry, the harvest yield must be positive, please try again")
     private Double harvestYield;
