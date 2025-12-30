@@ -1,12 +1,8 @@
 package com.tuwaiq.project_ghars.Service;
 
-import com.tuwaiq.project_ghars.Model.Farmer;
-import com.tuwaiq.project_ghars.Model.Product;
-import com.tuwaiq.project_ghars.Model.Stock;
-import com.tuwaiq.project_ghars.Model.User;
-import com.tuwaiq.project_ghars.Repository.ProductRepository;
-import com.tuwaiq.project_ghars.Repository.StockRepository;
-import com.tuwaiq.project_ghars.Repository.UserRepository;
+import com.tuwaiq.project_ghars.DTOIn.AddProductDTOIn;
+import com.tuwaiq.project_ghars.Model.*;
+import com.tuwaiq.project_ghars.Repository.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,6 +19,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 public class ProductServiceTest {
 
     @InjectMocks
@@ -34,11 +32,16 @@ public class ProductServiceTest {
     private StockRepository stockRepository;
 
     @Mock
+    private FarmRepository farmRepository;
+
+    @Mock
     private UserRepository userRepository;
 
     User user1, user2;
     Farmer farmer1;
     Product product1, product2;
+    Farm farm;
+    AddProductDTOIn addProductDTOIn;
     Stock stock1, stock2;
     List<Product> products;
     List<Stock> stocks;
@@ -55,9 +58,13 @@ public class ProductServiceTest {
 
         stock2 = new Stock(1, 30, "PIECE",LocalDateTime.now(),null,null);
 
-        product1 = new Product(1, "Apple", "Fresh apple", 10.0, "HARVESTED_PRODUCT", true, "photo", stock1, null);
+        farm = new Farm(1, "123456789", "Pending", "happy farm", "happy farm", "Small", "apples", 5.5, "https", LocalDateTime.now(), farmer1, null, null, null);
 
-        product2 = new Product(2, "Tomato", "Fresh tomato", 5.0, "SEEDS", true, "photo", stock2, null);
+        product1 = new Product(1, "Apple", "Fresh apple", 10.0, "HARVESTED_PRODUCT", true, "photo", stock1, farm);
+
+        product2 = new Product(2, "Tomato", "Fresh tomato", 5.0, "SEEDS", true, "photo", stock2, farm);
+
+        addProductDTOIn=new AddProductDTOIn("Apple","Fresh apple",10.0, "HARVESTED_PRODUCT", true, "photo",50,"PIECE",farm.getId());
 
         products = new ArrayList<>();
         products.add(product1);
@@ -95,11 +102,13 @@ public class ProductServiceTest {
     @Test
     public void addProduct() {
         when(userRepository.findUserById(user2.getId())).thenReturn(user2);
+        when(farmRepository.findFarmById(farm.getId())).thenReturn(farm);
 
-        productService.addProduct(user2.getId(), product1);
+        productService.addProduct(user2.getId(), addProductDTOIn);
 
         verify(userRepository, times(1)).findUserById(user2.getId());
-        verify(productRepository, times(1)).save(product1);
+        verify(farmRepository,times(1)).findFarmById(farm.getId());
+        verify(productRepository, times(1)).save(any());
     }
 
     @Test

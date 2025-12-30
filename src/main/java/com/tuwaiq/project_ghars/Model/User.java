@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "users")
 public class User implements UserDetails {
 
     @Id
@@ -52,13 +54,12 @@ public class User implements UserDetails {
     @Column(columnDefinition = "varchar(10) not null")
     private String phoneNumber;
 
-    @NotEmpty
     @Pattern(regexp = "^(FARMER|CUSTOMER|DRIVER|ADMIN)$")
     @Column(columnDefinition = "varchar(10) not null")
     private String role;
 
-    @Column(columnDefinition = "datetime")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column()
+    private LocalDateTime createdAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn

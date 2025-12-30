@@ -49,7 +49,10 @@ public class Configuration {
                                 "/api/v1/event/upcoming",
                                 "/api/v1/event/upcoming/city/{city}",
                                 "/api/v1/farmer/most-seasonal-yield",
-                                "/api/v1/farmer/reset-seasonal-yield"
+                                "/api/v1/farmer/reset-seasonal-yield",
+                                "/api/v1/virtual-plot/decrease-sun/{plotId}",
+                                "/api/v1/virtual-plot/decrease-water/{plotId}",
+                                "/api/v1/virtual-plot/check-plant/{plotId}"
                         ).permitAll()
 
                         // Plant (view & filter) Public
@@ -171,6 +174,9 @@ public class Configuration {
                                 "/api/v1/virtualfarm/get/{virtualFarmId}",
                                 "/api/v1/virtualfarm/update/{virtualFarmId}",
                                 "/api/v1/virtualfarm/delete/{virtualFarmId}",
+                                "/api/v1/virtual-plot/add-water/{plotId}",
+                                "/api/v1/virtual-plot/add-sun/{plotId}",
+                                "/api/v1/virtual-plot/harvest/{plotId}",
 
                                 // Virtual Plot
                                 "/api/v1/virtual-plot/add/{virtualFarmId}/{plotType}",
