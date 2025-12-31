@@ -62,6 +62,7 @@ This project was developed as a **team-based backend project**, with responsibil
 | Authorization | Role-based (USER / ADMIN) |
 | Access Control | Configured using `requestMatchers` |
 | Testing | Postman API testing |
+| Testing | Junit testing |
 
 Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
@@ -92,6 +93,8 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 - Integrated PlantNet for plant identification
 - Contributed to payment integration (Moyasar)
 - Implemented farmer analytics and ranking features
+- Implemented the virtual farm automation game through n8n
+- Tested the system using Junit test
 
 ---
 
@@ -157,6 +160,7 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 - Plant disease detection using images
 - Smart plant recommendations
 - Seasonal and location-based suggestions
+- adding plants using AI
 
 ---
 
@@ -167,15 +171,23 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 | PlantNet API | Plant identification |
 | OpenAI | Learning & recommendations (shared) |
 | Moyasar | Payments (shared) |
+| N8N | Virtual farm automation |
 | Email (SMTP / Gmail) | Notifications |
+| Whatsapp | Communication between users |
+
 
 ---
 
 ## 📦 Deliverables
 
-- Presentation
-- Poster
-- Postman API Testing
+| Deliverables | Link |
+|------|--------|
+| Presentation | [Presentation](https://drive.google.com/file/d/1r1YDjbyCwtb1u1vng-a0EZaGvKuzg6w2/view?usp=drive_link) |
+| Figma | [Figam](https://www.figma.com/design/0GnFPaEWL0pNQ6WeAUonFx/%D8%BA%D8%B1%D8%B3?node-id=0-1&t=zhbTtny5ZUantdoX-1) |
+| Class diagram | [Class diagram](https://drive.google.com/file/d/1bazr4Rj8MIqXq4VRFbGhFs__ZGQzoJOU/view?usp=drive_link) |
+| Use case diagram | [Use case diagram](https://drive.google.com/file/d/1Z15M3bTLHXQe6vrUnr7irsdpVXH9-VP7/view?usp=drive_link) |
+| Postman API Testing | [Postman collection](https://documenter.getpostman.com/view/45708429/2sBXVbJZc1) |
+| Domain | [Ghars](http://ghars.eu-central-1.elasticbeanstalk.com/) |
 
 ---
 
@@ -210,6 +222,30 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 | GET | `/get` | Get my customer profile | Ibrahim |
 | PUT | `/update` | Update my customer profile | Ibrahim |
 | DELETE | `/delete` | Delete my customer profile | Ibrahim |
+
+---
+
+### FarmerController (`/api/v1/farmer`)
+
+| Method | Path | Description | Author |
+|--------|------|-------------|--------|
+| POST | `/register` | Register farmer profile | Ibrahim |
+| GET | `/get` | Get all farmer profile | Ibrahim |
+| GET | `/get-my-info` | Get all farmer profile | Ibrahim |
+| PUT | `/update` | Update my farmer profile | Ibrahim |
+| POST | `/talk-about-plant/{farmerId}/{plantName}` | Talk with other farmer who planted this plant | Osama |
+| POST | `/talk/{farmerId}/{message}` | Talk with other farmers | Osama |
+| GET | `/by-city` | Get farmers in this city | Osama |
+| GET | `/by-level` | Get farmers in this level range | Osama |
+| GET | `/by-rank` | Get farmers in this rank | Osama |
+| GET | `/most-level` | Get farmer with the highest level | Osama |
+| GET | `/most-yield` | Get farmer with the most yield (score) | Osama |
+| GET | `/most-seasonal-yield` | Get farmer with the most seasonal yield (score) | Osama |
+| PUT | `/reset-seasonal-yield` | Reset the seasonal yield for all farmers | Osama |
+
+
+
+
 
 ---
 
@@ -379,9 +415,9 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 | POST | `/add` | Add product | Fouz |
 | PUT | `/update/{productId}` | Update product | Fouz |
 | DELETE | `/delete/{productId}` | Delete product | Fouz |
-| GET | `/by-sell-type/{sellType}` | Filter store by sell type | Fouz |
-| GET | `/order-by-price` | Get products ordered by price | Fouz |
-| GET | `/price-range/{minPrice}/{maxPrice}` | Filter products by price range | Fouz |
+| GET | `/by-sell-type/{sellType}` | Filter store by sell type | Osama |
+| GET | `/order-by-price` | Get products ordered by price | Osama |
+| GET | `/price-range/{minPrice}/{maxPrice}` | Filter products by price range | Osama |
 
 ---
 
@@ -441,7 +477,7 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/pay/{orderId}` | Start payment (Moyasar gateway) | Fouz |
+| POST | `/pay/{orderId}` | Start payment (Moyasar gateway) | Fouz and Osama |
 
 ---
 
