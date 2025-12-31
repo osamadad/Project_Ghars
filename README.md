@@ -64,8 +64,6 @@ This project was developed as a **team-based backend project**, with responsibil
 | Testing | Postman API testing |
 | Testing | Junit testing |
 
-Security configuration contributed by **Ibrahim** with support from **Fouz**.
-
 ---
 
 ## 👥 Team Contributions
@@ -95,63 +93,6 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 - Implemented farmer analytics and ranking features
 - Implemented the virtual farm automation game through n8n
 - Tested the system using Junit test
-
----
-
-### 👨‍💻 Ibrahim
-
-**Entities**
-- User
-- Farmer
-- Customer
-- Achievement
-- Virtual Farm
-- Virtual Plot
-- Review
-- Event
-- Address
-
-**External Integrations**
-- Email Service (SMTP / Gmail)
-- OpenAI
-
-**Work Summary**
-- Implemented core user and farmer management
-- Built achievement and progress tracking system
-- Implemented learning-based agriculture endpoints
-- Managed license upload and approval workflow
-- Handled events and event information
-- Implemented virtual farming logic
-- Implemented email notification system
-- Implemented security configuration (`requestMatchers`)
-- Postman API testing (with Fouz)
-
----
-
-### 👨‍💻 Fouz
-
-**Entities (All CRUD)**
-- Stock
-- Product
-- Order
-- OrderItem
-- Invoice
-- Delivery
-- Payment
-
-**External Integrations**
-- Moyasar Payment Gateway (shared)
-- OpenAI (shared)
-
-**Work Summary**
-- Implemented product and stock management
-- Built full order lifecycle and order item handling
-- Implemented invoice and payment logic
-- Integrated Moyasar payment gateway
-- Managed delivery process and driver assignment
-- Handled order tracking, refunds, and confirmations
-
----
 
 ## 🤖 AI & Smart Features
 
@@ -206,11 +147,11 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/add` | Create address for the authenticated user | Ibrahim |
-| GET | `/get` | Get all addresses | Ibrahim |
-| GET | `/get-my-address` | Get my address | Ibrahim |
-| PUT | `/update` | Update my address | Ibrahim |
-| DELETE | `/delete` | Delete my address | Ibrahim |
+| POST | `/add` | Create address for the authenticated user | - |
+| GET | `/get` | Get all addresses | - |
+| GET | `/get-my-address` | Get my address | - |
+| PUT | `/update` | Update my address | - |
+| DELETE | `/delete` | Delete my address | - |
 
 ---
 
@@ -218,10 +159,10 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/register` | Register customer profile | Ibrahim |
-| GET | `/get` | Get my customer profile | Ibrahim |
-| PUT | `/update` | Update my customer profile | Ibrahim |
-| DELETE | `/delete` | Delete my customer profile | Ibrahim |
+| POST | `/register` | Register customer profile | - |
+| GET | `/get` | Get my customer profile | - |
+| PUT | `/update` | Update my customer profile | - |
+| DELETE | `/delete` | Delete my customer profile | - |
 
 ---
 
@@ -229,10 +170,10 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/register` | Register farmer profile | Ibrahim |
-| GET | `/get` | Get all farmer profile | Ibrahim |
-| GET | `/get-my-info` | Get all farmer profile | Ibrahim |
-| PUT | `/update` | Update my farmer profile | Ibrahim |
+| POST | `/register` | Register farmer profile | - |
+| GET | `/get` | Get all farmer profile | - |
+| GET | `/get-my-info` | Get all farmer profile | - |
+| PUT | `/update` | Update my farmer profile | - |
 | POST | `/talk-about-plant/{farmerId}/{plantName}` | Talk with other farmer who planted this plant | Osama |
 | POST | `/talk/{farmerId}/{message}` | Talk with other farmers | Osama |
 | GET | `/by-city` | Get farmers in this city | Osama |
@@ -253,10 +194,10 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/register` | Register driver profile | Fouz |
-| GET | `/get` | Get my driver profile | Fouz |
-| PUT | `/update` | Update my driver profile | Fouz |
-| DELETE | `/delete` | Delete my driver profile | Fouz |
+| POST | `/register` | Register driver profile | - |
+| GET | `/get` | Get my driver profile | - |
+| PUT | `/update` | Update my driver profile | - |
+| DELETE | `/delete` | Delete my driver profile | - |
 
 ---
 
@@ -264,9 +205,9 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| GET | `/my` | Get my deliveries | Fouz |
-| POST | `/create/{orderId}/{driverId}` | Create delivery for an order and assign driver | Fouz |
-| PUT | `/update-status/{deliveryId}?status=...` | Update delivery status | Fouz |
+| GET | `/my` | Get my deliveries | - |
+| POST | `/create/{orderId}/{driverId}` | Create delivery for an order and assign driver | - |
+| PUT | `/update-status/{deliveryId}?status=...` | Update delivery status | - |
 
 ---
 
@@ -274,15 +215,15 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/add` | Add new event | Ibrahim |
-| GET | `/get` | Get all events | Ibrahim |
-| GET | `/get/{eventId}` | Get event by ID | Ibrahim |
-| PUT | `/update/{eventId}` | Update event | Ibrahim |
-| DELETE | `/delete/{eventId}` | Delete event | Ibrahim |
-| POST | `/join/{eventId}` | Join event | Ibrahim |
-| POST | `/leave/{eventId}` | Leave event | Ibrahim |
-| GET | `/upcoming` | Get upcoming events | Ibrahim |
-| GET | `/upcoming/city/{city}` | Get upcoming events by city | Ibrahim |
+| POST | `/add` | Add new event | - |
+| GET | `/get` | Get all events | - |
+| GET | `/get/{eventId}` | Get event by ID | - |
+| PUT | `/update/{eventId}` | Update event | - |
+| DELETE | `/delete/{eventId}` | Delete event | - |
+| POST | `/join/{eventId}` | Join event | - |
+| POST | `/leave/{eventId}` | Leave event | - |
+| GET | `/upcoming` | Get upcoming events | - |
+| GET | `/upcoming/city/{city}` | Get upcoming events by city | - |
 
 ---
 
@@ -295,9 +236,9 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 | GET | `/get-my-farm` | Get my farm | Osama |
 | PUT | `/update/{farmId}` | Update farm | Osama |
 | DELETE | `/delete/{farmId}` | Delete farm | Osama |
-| PUT | `/add-license/{farmId}` | Upload/add farm license (pending approval) | Ibrahim |
-| PUT | `/license/accept/{farmId}` | Accept farm license | Ibrahim |
-| PUT | `/license/reject/{farmId}` | Reject farm license | Ibrahim |
+| PUT | `/add-license/{farmId}` | Upload/add farm license (pending approval) | - |
+| PUT | `/license/accept/{farmId}` | Accept farm license | - |
+| PUT | `/license/reject/{farmId}` | Reject farm license | - |
 
 ---
 
@@ -350,12 +291,12 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| GET | `/soil-seeds` | AI lesson: Soil & Seeds | Ibrahim |
-| GET | `/home-gardening` | AI lesson: Home Gardening | Ibrahim |
-| GET | `/watering-fertilizing` | AI lesson: Watering & Fertilizing | Ibrahim |
-| GET | `/plant-care` | AI lesson: Plant Care | Ibrahim |
-| GET | `/plant-problems` | AI lesson: Plant Problems | Ibrahim |
-| GET | `/recommend-event` | Recommend best event | Ibrahim |
+| GET | `/soil-seeds` | AI lesson: Soil & Seeds | - |
+| GET | `/home-gardening` | AI lesson: Home Gardening | - |
+| GET | `/watering-fertilizing` | AI lesson: Watering & Fertilizing | - |
+| GET | `/plant-care` | AI lesson: Plant Care | - |
+| GET | `/plant-problems` | AI lesson: Plant Problems | - |
+| GET | `/recommend-event` | Recommend best event | - |
 | POST | `/identify/{organ}` | PlantNet: identify plant (image) | Osama |
 | POST | `/identify-diseases/{organ}` | PlantNet: identify disease (image) | Osama |
 | GET | `/learn/green-house` | AI learning: greenhouse | Osama |
@@ -367,11 +308,11 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/add` | Add virtual farm | Ibrahim |
-| GET | `/get` | Get my virtual farms | Ibrahim |
-| GET | `/get/{virtualFarmId}` | Get my virtual farm by ID | Ibrahim |
-| PUT | `/update/{virtualFarmId}` | Update virtual farm | Ibrahim |
-| DELETE | `/delete/{virtualFarmId}` | Delete virtual farm | Ibrahim |
+| POST | `/add` | Add virtual farm | - |
+| GET | `/get` | Get my virtual farms | - |
+| GET | `/get/{virtualFarmId}` | Get my virtual farm by ID | - |
+| PUT | `/update/{virtualFarmId}` | Update virtual farm | - |
+| DELETE | `/delete/{virtualFarmId}` | Delete virtual farm | - |
 
 ---
 
@@ -379,12 +320,12 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/add/{virtualFarmId}/{plotType}` | Add virtual plot | Ibrahim |
-| GET | `/get/{virtualFarmId}` | Get my plots by virtual farm | Ibrahim |
-| GET | `/get-by-id/{virtualPlotId}` | Get my plot by ID | Ibrahim |
-| DELETE | `/delete/{virtualPlotId}` | Delete virtual plot | Ibrahim |
-| PUT | `/assign-plant/{plotId}/{plantId}` | Assign plant to plot | Ibrahim |
-| PUT | `/uproot/{plotId}` | Uproot plant from plot | Ibrahim |
+| POST | `/add/{virtualFarmId}/{plotType}` | Add virtual plot | - |
+| GET | `/get/{virtualFarmId}` | Get my plots by virtual farm | - |
+| GET | `/get-by-id/{virtualPlotId}` | Get my plot by ID | - |
+| DELETE | `/delete/{virtualPlotId}` | Delete virtual plot | - |
+| PUT | `/assign-plant/{plotId}/{plantId}` | Assign plant to plot | - |
+| PUT | `/uproot/{plotId}` | Uproot plant from plot | - |
 | PUT | `/add-water/{plotId}` | Add water | Osama |
 | PUT | `/add-sun/{plotId}` | Add sun | Osama |
 | PUT | `/decrease-water/{plotId}` | Decrease water | Osama |
@@ -398,11 +339,11 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/add/{farmId}` | Add review to farm | Ibrahim |
-| GET | `/get` | Get all reviews | Ibrahim |
-| GET | `/get-by-farm/{farmId}` | Get reviews by farm | Ibrahim |
-| PUT | `/update/{reviewId}` | Update review | Ibrahim |
-| DELETE | `/delete/{reviewId}` | Delete review | Ibrahim |
+| POST | `/add/{farmId}` | Add review to farm | - |
+| GET | `/get` | Get all reviews | - |
+| GET | `/get-by-farm/{farmId}` | Get reviews by farm | - |
+| PUT | `/update/{reviewId}` | Update review | - |
+| DELETE | `/delete/{reviewId}` | Delete review | - |
 
 ---
 
@@ -410,11 +351,11 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| GET | `/get-all` | Get all products | Fouz |
-| GET | `/my-products` | Get my products | Fouz |
-| POST | `/add` | Add product | Fouz |
-| PUT | `/update/{productId}` | Update product | Fouz |
-| DELETE | `/delete/{productId}` | Delete product | Fouz |
+| GET | `/get-all` | Get all products | - |
+| GET | `/my-products` | Get my products | - |
+| POST | `/add` | Add product | - |
+| PUT | `/update/{productId}` | Update product | - |
+| DELETE | `/delete/{productId}` | Delete product | - |
 | GET | `/by-sell-type/{sellType}` | Filter store by sell type | Osama |
 | GET | `/order-by-price` | Get products ordered by price | Osama |
 | GET | `/price-range/{minPrice}/{maxPrice}` | Filter products by price range | Osama |
@@ -425,12 +366,12 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| GET | `/get-all` | Get all stocks | Fouz |
-| GET | `/my-stock` | Get my stock | Fouz |
-| PUT | `/add-quantity/{stockId}` | Add stock quantity | Fouz |
-| PUT | `/reduce-quantity/{stockId}` | Reduce stock quantity | Fouz |
-| PUT | `/update/{stockId}` | Update stock | Fouz |
-| DELETE | `/delete/{stockId}` | Delete stock | Fouz |
+| GET | `/get-all` | Get all stocks | - |
+| GET | `/my-stock` | Get my stock | - |
+| PUT | `/add-quantity/{stockId}` | Add stock quantity | - |
+| PUT | `/reduce-quantity/{stockId}` | Reduce stock quantity | - |
+| PUT | `/update/{stockId}` | Update stock | - |
+| DELETE | `/delete/{stockId}` | Delete stock | - |
 
 ---
 
@@ -438,14 +379,14 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| GET | `/get-all` | Get all orders | Fouz |
-| GET | `/my-orders` | Get my orders | Fouz |
-| POST | `/create` | Create order | Fouz |
-| POST | `/pay/{orderId}` | Pay order | Fouz |
-| POST | `/return/{orderId}` | Request return | Fouz |
-| POST | `/confirm-return/{orderId}` | Confirm return & refund | Fouz |
-| PUT | `/update-status/{orderId}?status=...` | Update order status | Fouz |
-| DELETE | `/delete/{orderId}` | Delete order | Fouz |
+| GET | `/get-all` | Get all orders | - |
+| GET | `/my-orders` | Get my orders | - |
+| POST | `/create` | Create order | - |
+| POST | `/pay/{orderId}` | Pay order | - |
+| POST | `/return/{orderId}` | Request return | - |
+| POST | `/confirm-return/{orderId}` | Confirm return & refund | - |
+| PUT | `/update-status/{orderId}?status=...` | Update order status | - |
+| DELETE | `/delete/{orderId}` | Delete order | - |
 
 ---
 
@@ -453,10 +394,10 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| GET | `/get/{orderId}` | Get order items by order | Fouz |
-| POST | `/add/{orderId}` | Add item to order | Fouz |
-| PUT | `/update/{orderItemId}` | Update order item | Fouz |
-| DELETE | `/delete/{orderItemId}` | Delete order item | Fouz |
+| GET | `/get/{orderId}` | Get order items by order | - |
+| POST | `/add/{orderId}` | Add item to order | - |
+| PUT | `/update/{orderItemId}` | Update order item | - |
+| DELETE | `/delete/{orderItemId}` | Delete order item | - |
 
 ---
 
@@ -464,12 +405,12 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| GET | `/get-all` | Get all invoices | Fouz |
-| GET | `/my-invoices` | Get my invoices | Fouz |
-| POST | `/create/{orderId}` | Create invoice for order | Fouz |
-| PUT | `/update/{invoiceId}` | Update invoice | Fouz |
-| DELETE | `/delete/{invoiceId}` | Delete invoice | Fouz |
-| GET | `/platform-profit` | Get platform total profit | Fouz |
+| GET | `/get-all` | Get all invoices | - |
+| GET | `/my-invoices` | Get my invoices | - |
+| POST | `/create/{orderId}` | Create invoice for order | - |
+| PUT | `/update/{invoiceId}` | Update invoice | - |
+| DELETE | `/delete/{invoiceId}` | Delete invoice | - |
+| GET | `/platform-profit` | Get platform total profit | - |
 
 ---
 
@@ -477,7 +418,7 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/pay/{orderId}` | Start payment (Moyasar gateway) | Fouz and Osama |
+| POST | `/pay/{orderId}` | Start payment (Moyasar gateway) | - and Osama |
 
 ---
 
@@ -485,10 +426,10 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/add` | Add level | Ibrahim |
-| GET | `/get` | Get all levels | Ibrahim |
-| PUT | `/update/{levelId}` | Update level | Ibrahim |
-| DELETE | `/delete/{levelId}` | Delete level | Ibrahim |
+| POST | `/add` | Add level | - |
+| GET | `/get` | Get all levels | - |
+| PUT | `/update/{levelId}` | Update level | - |
+| DELETE | `/delete/{levelId}` | Delete level | - |
 
 ---
 
@@ -496,10 +437,10 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/add` | Add achievement | Ibrahim |
-| GET | `/get` | Get all achievements | Ibrahim |
-| PUT | `/update/{achievementId}` | Update achievement | Ibrahim |
-| DELETE | `/delete/{achievementId}` | Delete achievement | Ibrahim |
+| POST | `/add` | Add achievement | - |
+| GET | `/get` | Get all achievements | - |
+| PUT | `/update/{achievementId}` | Update achievement | - |
+| DELETE | `/delete/{achievementId}` | Delete achievement | - |
 
 ---
 
@@ -507,8 +448,8 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/unlock/{achievementId}` | Unlock achievement | Ibrahim |
-| GET | `/my` | Get my achievements | Ibrahim |
+| POST | `/unlock/{achievementId}` | Unlock achievement | - |
+| GET | `/my` | Get my achievements | - |
 
 ---
 
@@ -516,4 +457,4 @@ Security configuration contributed by **Ibrahim** with support from **Fouz**.
 
 | Method | Path | Description | Author |
 |--------|------|-------------|--------|
-| POST | `/register` | Register admin user | Ibrahim |
+| POST | `/register` | Register admin user | - |
